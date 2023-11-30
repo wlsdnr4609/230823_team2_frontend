@@ -86,7 +86,7 @@ class App extends Component {
   noPermission = (e) => {
     if(window.location.hash != 'nocookie'){
       this.remove_cookie();
-      window.location.href = '/login_co/#nocookie';
+      window.location.href = '/login/#nocookie';
     }
   };
 

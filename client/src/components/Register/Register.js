@@ -148,7 +148,7 @@ class Register extends Component {
             })
             .then( response => {
                 try {
-                    const dupli_count = response.data.json[0].num;
+                    const dupli_count = response.data.json[0].mid;
                     if(dupli_count !== 0){
                         $('#email_val').addClass('border_validate_err');
                         $('#email2_val').addClass('border_validate_err');

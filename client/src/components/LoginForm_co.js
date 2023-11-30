@@ -13,8 +13,8 @@ class LoginForm_co extends Component {
             this.sweetalert('이메일과 비밀번호를 확인해주세요.', '', 'info', '닫기')
         }else{
             axios.post('http://192.168.0.47:8080/api/loginPost', {
-                is_Email: this.email_val,
-                is_Password: this.pwd_val
+                email: this.email_val,
+                pw: this.pwd_val
             })
             .then( response => {
                 var userid = response.data.json[0].email
@@ -27,8 +27,8 @@ class LoginForm_co extends Component {
                     expires.setMinutes(expires.getMinutes() + 60)
                     
                     axios.post('http://192.168.0.47:8080/api/loginPost', {
-                        is_Email: email,
-                        is_UserName: niname,
+                        email: userid,
+                        niname: username,
                     })
                     .then( response => {
                         cookie.save('email', response.data.token1
@@ -43,7 +43,7 @@ class LoginForm_co extends Component {
                     });
                     
                     setTimeout(function() {
-                        window.location.href = '/login_co';
+                        window.location.href = '/login';
                     }.bind(this),1000);
                 }else{
                     this.sweetalert('이메일과 비밀번호를 확인해주세요.', '', 'info', '닫기')

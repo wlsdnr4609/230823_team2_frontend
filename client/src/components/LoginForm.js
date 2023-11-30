@@ -148,7 +148,7 @@ class LoginForm extends Component {
                         <input type="password" id="pwd_val" placeholder="비밀번호" />
                     </div>
                     <ul className="af">
-                        <li><Link to={'/Register_co'}>회원가입</Link></li>
+                        <li><Link to={'/Register'}>회원가입</Link></li>
                         <li className="pwr_b" onClick={this.pwdResetClick}><a href="#n">비밀번호 재설정</a></li>
                     </ul>
                     
