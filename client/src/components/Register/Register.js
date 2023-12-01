@@ -143,7 +143,7 @@ class Register extends Component {
 
         if(this.fnValidate()){
             this.state.full_email = this.email_val_checker+'@'+this.email2_val_checker
-            axios.post('http://192.168.0.47:8080/api/loginPost', {
+            axios.post('http://192.168.0.47:8080/api/emailCK', {
                 email: this.email_val_checker+'@'+this.email2_val_checker
             })
             .then( response => {

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from "axios";
 import Swal from 'sweetalert2';
 import $ from 'jquery';
+import cookie from 'react-cookies';
 
 class ReRegister extends Component {
     constructor (props) {
@@ -11,9 +12,15 @@ class ReRegister extends Component {
             append_SwtoolList: '',
             before_swtcode: props.match.params.mid,
             selectedFile: null,
+            email: '',
+            niname: '',
         }
     }
     componentDidMount() {
+        var cookie_usernm = cookie.load('niname')
+        var cookie_userid = cookie.load('email')
+        this.setState({niname : cookie_usernm})
+        this.setState({email : cookie_userid})
         // this.callSwToolListApi()
     }
    
@@ -24,11 +31,14 @@ class ReRegister extends Component {
         .then( response => {            
             try {
                 var data = response.data
-                this.setState({title: data.title})
-                this.setState({cont: data.cont})
-                $('#is_Swt_toolname').val(data.title)
-                $('#is_Comments').val(data.cont)
-                                         
+                this.setState({email: data.email})
+                // this.setState({niname: data.niname})
+                $('#email_val').val(data.email)
+                $('#email2_val').val(data.email2)
+                $('#niname_val').val(data.niname)
+                $('#name_val').val(data.name)
+                $('#pwd_val').val(data.pw)
+                                      
             } 
             catch (error) {
                 alert('3. 작업중 오류가 발생하였습니다.')
@@ -46,6 +56,7 @@ class ReRegister extends Component {
         this.pwd_val_checker = $('#pwd_val').val();
         this.pwd_cnf_val_checker = $('#pwd_cnf_val').val();
         this.name_val_checker = $('#name_val').val();
+        this.niname_val_checker = $('#niname_val').val();
         // this.org_val_checker = $('#org_val').val();
         // this.major_val_checker = $('#major_val').val();
         // this.phone1_val_checker = $('#phone1_val').val();
@@ -57,30 +68,30 @@ class ReRegister extends Component {
             var pattern2 = /[a-zA-Z]/;
             var pattern3 = /[~!@#$%^&*()_+|<>?:{}]/;
 
-            if(this.email_val_checker === '') {
-                $('#email_val').addClass('border_validate_err');
-                this.sweetalert('이메일 주소를 다시 확인해주세요.', '', 'info', '닫기')
-                return false;
-            }
-            if(this.email_val_checker.search(/\s/) !== -1) {
-                $('#email_val').addClass('border_validate_err');
-                this.sweetalert('이메일 공백을 제거해 주세요.', '', 'info', '닫기')
-                return false;
-            }
-            $('#email_val').removeClass('border_validate_err');
+            // if(this.email_val_checker === '') {
+            //     $('#email_val').addClass('border_validate_err');
+            //     this.sweetalert('이메일 주소를 다시 확인해주세요.', '', 'info', '닫기')
+            //     return false;
+            // }
+            // if(this.email_val_checker.search(/\s/) !== -1) {
+            //     $('#email_val').addClass('border_validate_err');
+            //     this.sweetalert('이메일 공백을 제거해 주세요.', '', 'info', '닫기')
+            //     return false;
+            // }
+            // $('#email_val').removeClass('border_validate_err');
 
-            if(this.email2_val_checker ==='') {
-                $('#email2_val').addClass('border_validate_err');
-                this.sweetalert('이메일 주소를 다시 확인해주세요.', '', 'info', '닫기')
-                return false;
-            }
-            $('#email2_val').removeClass('border_validate_err');
+            // if(this.email2_val_checker ==='') {
+            //     $('#email2_val').addClass('border_validate_err');
+            //     this.sweetalert('이메일 주소를 다시 확인해주세요.', '', 'info', '닫기')
+            //     return false;
+            // }
+            // $('#email2_val').removeClass('border_validate_err');
 
-            if(this.pwd_val_checker ==='') {
-                $('#pwd_val').addClass('border_validate_err');
-                this.sweetalert('비밀번호를 입력해주세요.', '', 'info', '닫기')
-                return false;
-            }
+            // if(this.pwd_val_checker ==='') {
+            //     $('#pwd_val').addClass('border_validate_err');
+            //     this.sweetalert('비밀번호를 입력해주세요.', '', 'info', '닫기')
+            //     return false;
+            // }
             if(this.pwd_val_checker !=='') {
                 var str = this.pwd_val_checker;
                 if(str.search(/\s/) !== -1) {
@@ -110,32 +121,44 @@ class ReRegister extends Component {
             }
             $('#pwd_cnf_val').removeClass('border_validate_err');
 
+            if(this.niname_val_checker ==='') {
+                $('#niname_val').addClass('border_validate_err');
+                this.sweetalert('닉네임을 입력해주세요.', '', 'info', '닫기')
+                return false;
+            }
+            if(this.niname_val_checker.search(/\s/) !== -1) {
+                $('#niname_val').addClass('border_validate_err');
+                this.sweetalert('닉네임에 공백을 제거해 주세요.', '', 'info', '닫기')
+                return false;
+            }
+            $('#niname_val').removeClass('border_validate_err');
+
             if(this.name_val_checker ==='') {
                 $('#name_val').addClass('border_validate_err');
-                this.sweetalert('닉네임을 입력해주세요.', '', 'info', '닫기')
+                this.sweetalert('이름을 입력해주세요.', '', 'info', '닫기')
                 return false;
             }
             if(this.name_val_checker.search(/\s/) !== -1) {
                 $('#name_val').addClass('border_validate_err');
-                this.sweetalert('닉네임에 공백을 제거해 주세요.', '', 'info', '닫기')
+                this.sweetalert('이름에 공백을 제거해 주세요.', '', 'info', '닫기')
                 return false;
             }
             $('#name_val').removeClass('border_validate_err');
     
            
-            $('#major_val').removeClass('border_validate_err');
-            if(this.phone1_val_checker ==='' || this.phone2_val_checker ===''
-            || this.phone3_val_checker ==='') {
-                $('#phone1_val').addClass('border_validate_err');
-                $('#phone2_val').addClass('border_validate_err');
-                $('#phone3_val').addClass('border_validate_err');
-                this.sweetalert('휴대전화 번호를 입력해주세요.', '', 'info', '닫기')
-                return false;
-            }
-            $('#phone1_val').removeClass('border_validate_err');
-            $('#phone2_val').removeClass('border_validate_err');
-            $('#phone3_val').removeClass('border_validate_err');
-            return true;
+            // $('#major_val').removeClass('border_validate_err');
+            // if(this.phone1_val_checker ==='' || this.phone2_val_checker ===''
+            // || this.phone3_val_checker ==='') {
+            //     $('#phone1_val').addClass('border_validate_err');
+            //     $('#phone2_val').addClass('border_validate_err');
+            //     $('#phone3_val').addClass('border_validate_err');
+            //     this.sweetalert('휴대전화 번호를 입력해주세요.', '', 'info', '닫기')
+            //     return false;
+            // }
+            // $('#phone1_val').removeClass('border_validate_err');
+            // $('#phone2_val').removeClass('border_validate_err');
+            // $('#phone3_val').removeClass('border_validate_err');
+            // return true;
         }
 
         // if(this.fnValidate()){
@@ -165,18 +188,18 @@ class ReRegister extends Component {
 
 
         if(this.fnValidate()){
-            this.state.name = this.name_val_checker
-            axios.post('http://192.168.0.47:8080/api/read', {
-                niname: this.name_val_checker
+            this.state.niname = this.niname_val_checker
+            axios.post('http://192.168.0.47:8080/api/ninameCk', {
+                niname: this.niname_val_checker
             })
             .then( response => {
                 try {
                     const dupli_count = response.data.json[0].mid;
                     if(dupli_count !== 0){
-                        $('#name_val').addClass('border_validate_err');
+                        $('#niname_val').addClass('border_validate_err');
                         this.sweetalert('이미 존재하는 닉네임입니다.', '', 'info', '닫기')
                     }else{
-                        $('#name_val').removeClass('border_validate_err');
+                        $('#niname_val').removeClass('border_validate_err');
                         this.fnSignInsert('signup', e)
                     }
                 } catch (error) {
@@ -237,6 +260,9 @@ class ReRegister extends Component {
     nameKeyPress = (e) => {
         $('#name_val').removeClass('border_validate_err');
     };
+    nameKeyPress = (e) => {
+        $('#niname_val').removeClass('border_validate_err');
+    };
 
     handleSubmit = (e) => {
         e.preventDefault();
@@ -273,20 +299,22 @@ class ReRegister extends Component {
                                             <tr className="re_email">
                                                 <th>이메일</th>
                                                 <td>
-                                                <input id="name_val" type="text" name="email"/>
+                                                <div  name="email" id="#email_val" class="">{this.state.email}</div>
+                                                {/* <input id="email_val" type="text" name="email"/> */}
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <th>이름</th>
                                                 <td>
-                                                    <input id="name_val" type="text" name="name"
-                                                    onKeyPress={this.nameKeyPress}/>
+                                                    <input type="text" name="name" id="name_val" class="" />
+                                                    {/* <input id="name_val" type="text" name="name"
+                                                    onKeyPress={this.nameKeyPress}/> */}
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <th>닉네임</th>
                                                 <td>
-                                                    <input id="name_val" type="text" name="niname"
+                                                    <input value='this.state.niname' id="niname_val" type="text" name="niname"
                                                     onKeyPress={this.nameKeyPress}/>
                                                 </td>
                                             </tr>
@@ -332,6 +360,8 @@ class ReRegister extends Component {
                                 <div className="btn_confirm">
                                     <div className="bt_ty bt_ty2 submit_ty1" 
                                     onClick={(e) => this.submitClick('modify', e)}>수정</div>
+                                    <div className="bt_ty bt_ty2 submit_ty1" 
+                                    onClick={(e) => this.submitClick('exit', e)}>탈퇴</div>
                                 </div>
                             </form>
                         </div>

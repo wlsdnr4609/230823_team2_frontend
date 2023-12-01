@@ -11,23 +11,34 @@ class Header extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            usernm:'',
+            niname:'',
         };
     }
     componentDidMount() {
-        var cookie_userid = cookie.load('userid')
-        var cookie_usernm = cookie.load('username')
-        var cookie_password = cookie.load('userpassword')
+        
+        if(window.location.pathname.indexOf('/login') != -1){
+            $('.menulist').hide()
+            $('.hd_top').hide()
+        }
+        
 
+
+        var cookie_userid = cookie.load('email')
+        var cookie_usernm = cookie.load('niname')
+        var cookie_password = cookie.load('pw')
+
+        this.setState({niname : cookie_usernm})
+        
+        
         if(cookie_userid != undefined){
             const expires = new Date()
             expires.setMinutes(expires.getMinutes() + 60)
 
-            cookie.save('userid', cookie_userid
+            cookie.save('email', cookie_userid
             , { path: '/', expires })
-            cookie.save('username', cookie_usernm
+            cookie.save('niname', cookie_usernm
             , { path: '/', expires })
-            cookie.save('userpassword', cookie_password
+            cookie.save('pw', cookie_password
             , { path: '/', expires })
 
             $('.menulist').show()
@@ -36,16 +47,16 @@ class Header extends Component {
             $('.menulist').hide()
             $('.hd_top').hide()
         }
-        this.callSessionInfoApi()
+        //this.callSessionInfoApi()
     }
 
     callSessionInfoApi = (type) => {
-        axios.post('/api/LoginForm?type=SessionConfirm', {
-            token1 : cookie.load('userid') 
-            , token2 : cookie.load('username') 
+        axios.post('http://192.168.0.47:8080/api/loginPost', {
+            token1 : cookie.load('email') 
+            , token2 : cookie.load('niname') 
         })
         .then( response => {
-            this.setState({usernm : response.data.token2})
+            this.setState({niname : response.data.niname})
         })
         .catch( error => {
             this.sweetalert('작업중 오류가 발생하였습니다.', error, 'error', '닫기');
@@ -74,10 +85,10 @@ class Header extends Component {
 
 
     logout = async e => {
-        cookie.remove('userid', { path: '/'});
-        cookie.remove('username', { path: '/'});
-        cookie.remove('userpassword', { path: '/'});
-        window.location.href = '/MainForm2';
+        cookie.remove('email', { path: '/'});
+        cookie.remove('niname', { path: '/'});
+        cookie.remove('pw', { path: '/'});
+        window.location.href = '/login';
     }
 
     render () {
@@ -93,7 +104,6 @@ class Header extends Component {
                             <li><a href='/CarRegister' >차량정보등록</a></li>
                             <li><a href='/ReRegister' >내 정보 수정</a></li>
                             <li><a href="javascript:" onClick={this.logout}>로그아웃</a></li>
-                            <li><a href='#' >탈퇴하기</a></li>
                             </ul>
                         </div>
                         </li>
@@ -101,7 +111,7 @@ class Header extends Component {
                     </li>
                 </ul>
                 <div className="hd_right">
-                    <p><span>'{this.state.usernm}'</span>님 반갑습니다.</p>
+                    <p><span>'{this.state.niname}'</span>님 반갑습니다.</p>
                 </div>
                 </div>
             </div>
@@ -112,6 +122,9 @@ class Header extends Component {
                     <nav className="gnb gnb_admin">
                     <ul className="af">
                          
+                        <li className="menulist">
+                            <Link to={'/NBoardList'}>충전소 검색</Link>
+                        </li>
                         <li className="menulist">
                             <Link to={'/NBoardList'}>공지사항</Link>
                         </li>

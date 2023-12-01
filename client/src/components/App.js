@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import { Route } from "react-router-dom";
 import cookie from 'react-cookies';
 import axios from "axios";
+import $ from 'jquery';
 
 // css
 import '../css/new.css';
 
 // header
-import HeaderAdmin from './Header/Header admin';
+import Header from './Header/Header';
 
 
 import MainForm from './Main/MainForm';
@@ -19,8 +20,6 @@ import Footer from './Footer/Footer';
 
 // login
 import LoginForm from './LoginForm';
-import LoginForm_co from './LoginForm_co';
-
 
 import QBoardList from './Board/QBoardList';
 import QBoardView from './Board/QBoardView';
@@ -50,36 +49,60 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      email: '',
+      pw: '', 
     }
   }
 
   componentDidMount() {
+    if(window.location.pathname.indexOf('/login') != -1){
+      $('.menulist').hide()
+      $('.hd_top').hide()
+    }
     if(window.location.pathname.indexOf('/PwChangeForm') == -1){
-      axios.post('/api/LoginForm?type=SessionConfirm', {
-        token1 : cookie.load('userid') 
-        , token2 : cookie.load('username') 
+      //this.setState({email: 'bao@naver.com'});
+      //this.setState({pw: '234'});
+      let email = '';     
+      let pw = '';
+      axios.post('http://192.168.0.47:8080/api/loginPost', {
+        //email: email,
+        //pw: pw
+        email: cookie.load('email'),
+        pw: cookie.load('pw')
+      }).then( response => {
+        if(response.data.email == undefined){
+          this.noPermission();
+        } else {
+          //alert("1. niname="+response.data.niname);
+        }
+      }).catch( error => {
+        this.noPermission();
       })
-      .then( response => {
-          this.state.userid = response.data.token1
-          let password = cookie.load('userpassword')
-          if(password !== undefined){
-            axios.post('/api/LoginForm?type=SessionSignin', {
-              is_Email: this.state.userid,
-              is_Token : password
-            })
-            .then( response => {
-              if(response.data.json[0].useremail == undefined){
-                this.noPermission()
-              }
-            })
-            .catch( error => {
-              this.noPermission()
-            });
-          }else{
-            this.noPermission()
-          }
-      })
-      .catch( response => this.noPermission());
+    //   axios.post('http://192.168.0.47:8080/api/loginPost', {
+    //      token1 : cookie.load('email'),
+    //      token2 : cookie.load('niname') 
+    //   })
+    //   .then( response => {
+    //       this.state.email = response.data.token1
+    //       let password = cookie.load('pw')
+    //       if(password !== undefined){
+    //         axios.post('http://192.168.0.47:8080/api/loginPost', {
+    //           email: this.state.email,
+    //           is_Token : password
+    //         })
+    //         .then( response => {
+    //           if(response.data.email == undefined){
+    //             this.noPermission()
+    //           }
+    //         })
+    //         .catch( error => {
+    //           this.noPermission()
+    //         });
+    //       }else{
+    //         this.noPermission()
+    //       }
+    //   })
+    //   .catch( response => this.noPermission());
     }
   }
 
@@ -91,9 +114,9 @@ class App extends Component {
   };
 
   remove_cookie = (e) => {
-    cookie.remove('userid', { path: '/'});
-    cookie.remove('username', { path: '/'});
-    cookie.remove('userpassword', { path: '/'});
+    cookie.remove('email', { path: '/'});
+    cookie.remove('niname', { path: '/'});
+    cookie.remove('pw', { path: '/'});
   }
 
   render () {
@@ -101,10 +124,9 @@ class App extends Component {
       
       <div className="App">
         
-        <HeaderAdmin/> 
-        <Route exact path='/' component={LoginForm_co} />
+        <Header/> 
+        <Route exact path='/' component={LoginForm} />
         <Route path='/login' component={LoginForm} />
-        <Route path='/login_co' component={LoginForm_co} />
         
         <Route path='/MainForm' component={MainForm} />
         <Route path='/QBoardList' component={QBoardList} />
@@ -136,7 +158,7 @@ class App extends Component {
       
     );
    
-  }
+  };
 }
 
 export default App;

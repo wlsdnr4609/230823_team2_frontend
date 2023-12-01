@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import axios from "axios";
 import $, { data } from 'jquery';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
+import cookie from 'react-cookies';
 
 class ContentView extends Component {
     constructor(props) {
@@ -13,29 +14,33 @@ class ContentView extends Component {
             // likeCnt: 0,
             // like: likeCnt + 1,
             // comment: '',
-            // replies: [], 
+            replies: [], 
             title: '',
             cont: '', 
-            niname: '',
-            regdate: '',  
-
+            niname: '',  //글작성자
+            regdate: '', 
+            niname2: '', //로그인한 닉네임
+            // replies: 'is_repliy',
         }
     }
-    
     componentDidMount () {
+        var cookie_usernm = cookie.load('niname2')
+        this.setState({niname2 : cookie_usernm})
         
-        if(this.state.before_swtcode === 'register'){
+        if(this.state.niname !== this.state.niname2){
             $('.modifyclass').hide()
+            $('.deleteclass').hide()
         }else{
             this.callSwToolInfoApi()
             $('.saveclass').hide()
         }
     }
+    
 
    
 
     callSwToolInfoApi = async () => {
-        axios.post('http://192.168.0.71:8080/api/read', {
+        axios.post('http://192.168.0.83:8080/api/read', {
             bid: this.state.before_swtcode,
         })
         .then( response => {            
@@ -70,11 +75,11 @@ class ContentView extends Component {
         })
         .catch( error => {alert('4. 작업중 오류가 발생하였습니다.');return false;} );
     }
-
+    
     deleteSwtool = (e) => {
         var event_target = e.target
         this.sweetalertDelete('정말 삭제하시겠습니까?', function() {
-            axios.post('http://192.168.0.71:8080/api/remove', {
+            axios.post('http://192.168.0.83:8080/api/remove', {
                 bid : event_target.getAttribute('id')
                 // is_SwtCd : event_target.getAttribute('id')
                
@@ -111,27 +116,27 @@ class ContentView extends Component {
           })
     }
 
-    // regeistComent = (e) => {
-    //     this.setState({
-    //         comment: e.target.value,
-    //     });
-    // };
-    // inputComment = (e) => {
-    //     const add = this.state.replies;
-    //     add.push(this.state.comment);
-    //     this.setState({
-    //         replies: this.state.replies,
-    //         comment: '',
-    //     });
-    // };
-    // PressClick = (e) => {
-    //     this.inputComment();
-    // };
-    // pressEnter = (e) => {
-    //     if (e.key === 'Enter') {
-    //         this.inputComment();
-    //     }
-    // };
+    regeistComent = (e) => {
+        this.setState({
+            comment: e.target.value,
+        });
+    };
+    inputComment = (e) => {
+        const add = this.state.replies;
+        add.push(this.state.comment);
+        this.setState({
+            replies: this.state.replies,
+            comment: '',
+        });
+    };
+    PressClick = (e) => {
+        this.inputComment();
+    };
+    pressEnter = (e) => {
+        if (e.key === 'Enter') {
+            this.inputComment();
+        }
+    };
 
     render () {
         
@@ -199,9 +204,9 @@ class ContentView extends Component {
                                             <td>
                                                 
                                                 <input type="text" name="repliy" id="is_repliy" class="" 
-                                                    // onChange={this.regeistComent}
-                                                    // onKeyPress={this.pressEnter}
-                                                    // value={this.state.comment}
+                                                    onChange={this.regeistComent}
+                                                    onKeyPress={this.pressEnter}
+                                                    value={this.state.comment}
                                                 />
                                                 <label className="btn_repliy" onClick={this.PressClick}>등록</label>
                                             </td>
@@ -211,9 +216,11 @@ class ContentView extends Component {
                                     </table>
                                     <div class="btn_confirm mt20" style={{"margin-bottom": "44px"}}>
                                         <Link to={'/NBoardList'} className="bt_ty bt_ty1 cancel_ty1">목록보기</Link>
-                                        <Link to={'/ContentView2/register/' + this.state.before_swtcode} className="bt_ty bt_ty1 cancel_ty1">수정</Link>
-                                        <a href="javascript:" className="bt_ty bt_ty2 submit_ty1 modifyclass" id={this.state.before_swtcode}
-                                        onClick={(e) => this.deleteSwtool(e)}>삭제</a>
+                                        <Link to={'/ContentView2/register/' + this.state.before_swtcode} className="bt_ty bt_ty2 submit_ty1 modifyclass">수정</Link>
+                                        {/* <a href="javascript:" className="bt_ty bt_ty2 submit_ty1 modifyclass" id={this.state.before_swtcode}
+                                        onClick={(e) => this.deleteSwtool('modify', e)}>수정</a> */}
+                                        <a href="javascript:" className="bt_ty bt_ty2 submit_ty1 deleteclass" id={this.state.before_swtcode}
+                                        onClick={(e) => this.deleteSwtool('delete', e)}>삭제</a>
                                     </div>
                                    
                                 </div>

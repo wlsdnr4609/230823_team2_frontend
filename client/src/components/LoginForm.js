@@ -10,32 +10,51 @@ class LoginForm extends Component {
         this.email_val = $('#email_val').val();
         this.pwd_val = $('#pwd_val').val();
         if(this.email_val === '' || this.pwd_val === ''){
-            this.sweetalert('이메일과 비밀번호를 확인해주세요.', '', 'info', '닫기')
+            this.sweetalert('1. 이메일과 비밀번호를 확인해주세요.', '', 'info', '닫기')
         }else{
-            axios.post('/api/LoginForm?type=signin', {
-                is_Email: this.email_val,
-                is_Password: this.pwd_val
+            axios.post('http://192.168.0.47:8080/api/loginPost', {
+                email: this.email_val,
+                pw: this.pwd_val
             })
             .then( response => {
-                var userid = response.data.json[0].useremail
-                var username = response.data.json[0].username
-                var upw = response.data.json[0].userpassword
+                var email = response.data.email
+                var niname = response.data.niname
+                var pw = response.data.pw
+                //alert("response.data="+response.data.email);
                 
+                if(response.data.email != undefined) {
+                    this.sweetalert('로그인 되었습니다.', '', 'info', '닫기')
+                    const expires = new Date()
+                    expires.setMinutes(expires.getMinutes() + 60)
+                    cookie.save('email', response.data.email
+                        , { path: '/', expires })
+                        cookie.save('niname', response.data.niname
+                        , { path: '/', expires })
+                        cookie.save('pw', response.data.pw
+                        , { path: '/', expires })
+                    setTimeout(function() {
+                        window.location.href = '/MainForm';
+                    }.bind(this),1000);
+                } else{
+                    this.sweetalert('2. 이메일과 비밀번호를 확인해주세요.', '', 'info', '닫기')
+                }
+
+                /*
                 if(userid != null && userid != ''){
                     // this.sweetalert('로그인 되었습니다.', '', 'info', '닫기')
                     const expires = new Date()
                     expires.setMinutes(expires.getMinutes() + 60)
                     
-                    axios.post('/api/LoginForm?type=SessionState', {
-                        is_Email: userid,
-                        is_UserName: username,
+                    axios.post('http://192.168.0.47:8080/api/loginPost', {
+                        email: userid,
+                        niname: username,
                     })
                     .then( response => {
-                        cookie.save('userid', response.data.token1
+                        cookie.save('email', response.data.token1
                         , { path: '/', expires })
-                        cookie.save('username', response.data.token2
+                        cookie.save('niname', response.data.token2
                         , { path: '/', expires })
-                        cookie.save('userpassword', upw
+                        cookie.save('pw', upw
                         , { path: '/', expires })
                     })  
                     .catch( error => {
@@ -43,13 +62,16 @@ class LoginForm extends Component {
                     });
                     
                     setTimeout(function() {
-                        window.location.href = '/MainForm';
+                        window.location.href = '/login';
                     }.bind(this),1000);
                 }else{
-                    this.sweetalert('이메일과 비밀번호를 확인해주세요.', '', 'info', '닫기')
+                    this.sweetalert('2. 이메일과 비밀번호를 확인해주세요.', '', 'info', '닫기')
                 }
+                */
+
+                
             })
-            .catch( error => {this.sweetalert('이메일과 비밀번호를 확인해주세요.', '', 'info', '닫기')} );
+            .catch( error => {this.sweetalert('3. 이메일과 비밀번호를 확인해주세요.', '', 'info', '닫기')} );
         }
     }
 

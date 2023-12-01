@@ -3,17 +3,21 @@ import {Link} from 'react-router-dom';
 import axios from "axios";
 import $ from 'jquery';
 import Swal from 'sweetalert2'
+import cookie from 'react-cookies';
 
 class NBoardView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            before_swtcode: props.match.params.bid,
+            username: props.match.params.niname,
             selectedFile: null,
+            niname: '',
         }
     }
 
     componentDidMount () {
+        var cookie_usernm = cookie.load('niname')
+        this.setState({niname : cookie_usernm})
         // if(this.state.before_swtcode == 'register'){
         //     $('.modifyclass').hide()
         // }else{
@@ -23,18 +27,19 @@ class NBoardView extends Component {
     }
 
     callSwToolInfoApi = async () => {
-        axios.post('http://localhost:8080/api/read', {
-            bid: this.state.before_swtcode,
+        axios.post('http://192.168.0.83:8080/api/read', {
+            niname: this.state.username,
         })
         .then( response => {
             try {
                 var data = response.data
-                $('#is_Swt_regdate').val(data.regdate)
-                $('#is_Swt_niname').val(data.niname)
-                $('#is_Swt_toolname').val(data.title)
+                this.setState({niname: data.niname})
+                // $('#is_Swt_regdate').val(data.regdate)
+                // $('#is_Swt_niname').val(data.niname)
+                // $('#is_Swt_toolname').val(data.title)
                 // $('#is_Swt_demo_site').val(data.swt_demo_site)
                 // $('#is_Giturl').val(data.swt_github_url)
-                $('#is_Comments').val(data.cont)
+                // $('#is_Comments').val(data.cont)
                 //$('#is_Swt_function').val(data.swt_function)
                 var manualName = data.swt_manual_path.replace('/swmanual/','')
                 var fileName = data.swt_big_imgpath.replace('/image/','')
@@ -111,11 +116,11 @@ class NBoardView extends Component {
             jsonstr = decodeURIComponent(jsonstr);
             var Json_form = JSON.stringify(jsonstr).replace(/\"/gi,'')
             Json_form = "{\"" +Json_form.replace(/\&/g,'\",\"').replace(/=/gi,'\":"')+"\"}";
-            //alert(Json_form);
+            alert(Json_form);
             //Json_form = JSON.parse(Json_form);
            
 
-            axios.post('http://192.168.0.71:8080/api/write', Json_form, {
+            axios.post('http://192.168.0.83:8080/api/write', Json_form, {
                 headers: {
                   'Content-Type': 'application/json',
                 },
@@ -221,39 +226,43 @@ class NBoardView extends Component {
                     </div>
                     <div class="bo_w re1_wrap re1_wrap_writer">
                         <form name="frm" id="frm" action="" onsubmit="" method="post" >
-                            <input id="is_Swtcode" type="hidden" name="is_Swtcode" />
-                            <input id="is_Email" type="hidden" name="is_Email" value="guest" />
-                            <input id="is_beforeSwtcode" type="hidden" name="is_beforeSwtcode" value={this.state.before_swtcode} />
+                            <input id="btype_val" type="hidden" name="btype" />
+                            <input id="is_Swt_niname" type="hidden" name="niname"  />
+                            <input id="is_Swt_toolname" type="hidden" name="title"  />
+                            <input id="is_Comments" type="hidden" name="cont"  />
                             <article class="res_w">
                                 <p class="ment" style={{"text-align": "right"}}>
                                     <span class="red">(*)</span>표시는 필수입력사항 입니다.
                                 </p>
                                 <div class="tb_outline">
                                     <table class="table_ty1">
-                                    <tr>
-                                            <th>
-                                                <label for="is_Swt_ btype">공지사항</label>
-                                            </th>
-                                            <td>
-                                                <div  name="N" id="is_Swt_btype" class=""></div>
-                                            </td>
-                                        </tr>
-                                        <tr>
+                                        <tr className="tr_tel">
+                                             <th>게시판 종류</th>
+                                                <td>
+                                                    <select id="btype_val" name="btype" className="select_ty1">
+                                                        <option value="">선택</option>
+                                                        <option value="N">공지사항</option>
+                                                        <option value="F">자유게시판</option>
+                                                        <option value="R">리뷰</option>
+                                                        <option value="Q">문의</option>
+                                                    </select>
+                                                    
+                                                </td>
+                                            </tr>
+                                        {/* <tr>
                                             <th>
                                                 <label for="is_Swt_regdate">작성일</label>
                                             </th>
                                             <td>
-                                                <div  name="regdate" id="is_Swt_regdate" class="">{this.state.regdate}</div>
-                                                {/* <input type="text" name="niname" id="is_Swt_toolname" class="" /> */}
+                                                <div value="sysdate" name="regdate" id="is_Swt_regdate" class="">{ this.state.regdate }</div>
                                             </td>
-                                        </tr>
+                                        </tr> */}
                                         <tr>
                                             <th>
                                                 <label for="is_Swt_niname">작성자</label>
                                             </th>
                                             <td>
                                                 <div  name="niname" id="is_Swt_niname" class="">{this.state.niname}</div>
-                                                {/* <input type="text" name="niname" id="is_Swt_toolname" class="" /> */}
                                             </td>
                                         </tr>
                                         <tr>
@@ -261,7 +270,7 @@ class NBoardView extends Component {
                                                 <label for="is_Swt_toolname">제목<span class="red">(*)</span></label>
                                             </th>
                                             <td>
-                                                <input type="text"  id="is_Swt_toolname" class="" />
+                                                <input type="text"  id="is_Swt_toolname" name="title" class="" />
                                             </td>
                                         </tr>
                                         <tr>
@@ -269,7 +278,7 @@ class NBoardView extends Component {
                                                 <label for="is_Comments">내용<span class="red">(*)</span></label>
                                             </th>
                                             <td>
-                                                <textarea  id="is_Comments" rows="" cols=""></textarea>
+                                                <textarea  id="is_Comments" name="cont" rows="" cols=""></textarea>
                                             </td>
                                         </tr>
                                         <tr class="div_tb_tr fileb">

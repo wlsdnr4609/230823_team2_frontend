@@ -5,37 +5,37 @@ import cookie from 'react-cookies';
 import Swal from 'sweetalert2';
 import $ from 'jquery';
 
-class LoginForm_co extends Component {
+class LoginForm extends Component {
     submitClick = (e) => {
         this.email_val = $('#email_val').val();
         this.pwd_val = $('#pwd_val').val();
         if(this.email_val === '' || this.pwd_val === ''){
             this.sweetalert('이메일과 비밀번호를 확인해주세요.', '', 'info', '닫기')
         }else{
-            axios.post('http://192.168.0.47:8080/api/loginPost', {
-                email: this.email_val,
-                pw: this.pwd_val
+            axios.post('/api/LoginForm?type=signin', {
+                is_Email: this.email_val,
+                is_Password: this.pwd_val
             })
             .then( response => {
-                var userid = response.data.json[0].email
-                var username = response.data.json[0].niname
-                var upw = response.data.json[0].pw
+                var userid = response.data.json[0].useremail
+                var username = response.data.json[0].username
+                var upw = response.data.json[0].userpassword
                 
                 if(userid != null && userid != ''){
                     // this.sweetalert('로그인 되었습니다.', '', 'info', '닫기')
                     const expires = new Date()
                     expires.setMinutes(expires.getMinutes() + 60)
                     
-                    axios.post('http://192.168.0.47:8080/api/loginPost', {
-                        email: userid,
-                        niname: username,
+                    axios.post('/api/LoginForm?type=SessionState', {
+                        is_Email: userid,
+                        is_UserName: username,
                     })
                     .then( response => {
-                        cookie.save('email', response.data.token1
+                        cookie.save('userid', response.data.token1
                         , { path: '/', expires })
-                        cookie.save('niname', response.data.token2
+                        cookie.save('username', response.data.token2
                         , { path: '/', expires })
-                        cookie.save('pw', upw
+                        cookie.save('userpassword', upw
                         , { path: '/', expires })
                     })  
                     .catch( error => {
@@ -43,7 +43,7 @@ class LoginForm_co extends Component {
                     });
                     
                     setTimeout(function() {
-                        window.location.href = '/login';
+                        window.location.href = '/MainForm';
                     }.bind(this),1000);
                 }else{
                     this.sweetalert('이메일과 비밀번호를 확인해주세요.', '', 'info', '닫기')
@@ -183,4 +183,4 @@ class LoginForm_co extends Component {
     }
 }
 
-export default LoginForm_co;
+export default LoginForm;

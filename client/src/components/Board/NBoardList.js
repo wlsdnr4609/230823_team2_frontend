@@ -16,7 +16,7 @@ class NBoardList extends Component {
     }
 
     callSwToolListApi = async () => {
-        axios.get('http://192.168.0.71:8080/api/list', {
+        axios.get('http://192.168.0.83:8080/api/list', {
         })
         .then( response => {
             try {

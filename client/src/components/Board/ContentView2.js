@@ -3,6 +3,7 @@ import {Link} from 'react-router-dom';
 import axios from "axios";
 import $ from 'jquery';
 import Swal from 'sweetalert2'
+import cookie from 'react-cookies';
 
 class ContentView2 extends Component {
     constructor(props) {
@@ -15,6 +16,9 @@ class ContentView2 extends Component {
     }
 
     componentDidMount () {
+        var cookie_usernm = cookie.load('niname')
+        this.setState({niname : cookie_usernm})
+
         // if(this.state.before_swtcode == 'register'){
         //     $('.modifyclass').hide()
         // }else{
@@ -24,14 +28,14 @@ class ContentView2 extends Component {
     }
 
     callSwToolInfoApi = async () => {
-        axios.post('http://192.168.0.71:8080/api/read', {
+        axios.post('http://192.168.0.83:8080/api/read', {
             bid: this.state.before_swtcode,
         })
         .then( response => {
             try {
                 var data = response.data
                 this.setState({niname: data.niname})
-                $('#is_Swt_niname').val(data.niname)
+                
                 $('#is_Swt_toolname').val(data.title)
                 $('#is_Comments').val(data.cont)
                 
@@ -114,7 +118,7 @@ class ContentView2 extends Component {
             alert(Json_form);
 
 
-            axios.post('http://192.168.0.71:8080/api/modify', Json_form, {
+            axios.post('http://192.168.0.83:8080/api/modify', Json_form, {
                 headers: {
                   'Content_Type': 'application/json',
                 },
@@ -237,7 +241,7 @@ class ContentView2 extends Component {
             <section class="sub_wrap">
                 <article class="s_cnt mp_pro_li ct1">
                     <div class="li_top">
-                        <h2 class="s_tit1">Software Tools 등록/수정</h2>
+                        <h2 class="s_tit1">글수정</h2>
                     </div>
                     <div class="bo_w re1_wrap re1_wrap_writer">
                         <form name="frm" id="frm" action="" onsubmit="" method="post" >
@@ -255,7 +259,7 @@ class ContentView2 extends Component {
                                                 <label for="is_Swt_niname">작성자</label>
                                             </th>
                                             <td>
-                                                <dev  name="niname" id="is_Swt_niname" class="">{ this.state.niname }</dev>
+                                                <dev  name="niname" id="is_Swt_niname" class="">{this.state.niname}</dev>
                                             </td>
                                         </tr>
                                         <tr>
