@@ -189,7 +189,7 @@ class ReRegister extends Component {
 
         if(this.fnValidate()){
             this.state.niname = this.niname_val_checker
-            axios.post('http://192.168.0.47:8080/api/ninameCk', {
+            axios.post('/api/ninameCk', {
                 niname: this.niname_val_checker
             })
             .then( response => {
@@ -220,7 +220,7 @@ class ReRegister extends Component {
             var Json_form = JSON.stringify(jsonstr).replace(/\"/gi,'')
             Json_form = "{\"" +Json_form.replace(/\&/g,'\",\"').replace(/=/gi,'\":"')+"\"}";
            
-            axios.post('http://192.168.0.71:8080/api/loginPost', Json_form, {
+            axios.post('/api/loginPost', Json_form, {
                 headers: {
                   'Content-Type': 'application/json',
                 },

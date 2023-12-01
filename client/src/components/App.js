@@ -64,7 +64,7 @@ class App extends Component {
       //this.setState({pw: '234'});
       let email = '';     
       let pw = '';
-      axios.post('http://192.168.0.47:8080/api/loginPost', {
+      axios.post('/api/loginPost', {
         //email: email,
         //pw: pw
         email: cookie.load('email'),

@@ -12,7 +12,7 @@ class LoginForm extends Component {
         if(this.email_val === '' || this.pwd_val === ''){
             this.sweetalert('1. 이메일과 비밀번호를 확인해주세요.', '', 'info', '닫기')
         }else{
-            axios.post('http://192.168.0.47:8080/api/loginPost', {
+            axios.post('/api/loginPost', {
                 email: this.email_val,
                 pw: this.pwd_val
             })
