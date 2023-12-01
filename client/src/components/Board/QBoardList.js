@@ -92,7 +92,7 @@ class QBoardList extends Component {
             <section class="sub_wrap" >
                 <article class="s_cnt mp_pro_li ct1 mp_pro_li_admin">
                     <div class="li_top">
-                        <h2 class="s_tit1">문의</h2>
+                        <h2 class="s_tit1">문의2</h2>
                         <div class="li_top_sch af">
                         <Link to={'/QBoardView/register'} className="sch_bt2 wi_au"> 등록</Link>
                         </div>
