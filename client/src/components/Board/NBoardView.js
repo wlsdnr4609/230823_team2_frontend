@@ -18,12 +18,7 @@ class NBoardView extends Component {
     componentDidMount () {
         var cookie_usernm = cookie.load('niname')
         this.setState({niname : cookie_usernm})
-        // if(this.state.before_swtcode == 'register'){
-        //     $('.modifyclass').hide()
-        // }else{
-        //     this.callSwToolInfoApi()
-        //     $('.saveclass').hide()
-        // }
+        
     }
 
     callSwToolInfoApi = async () => {
@@ -36,10 +31,10 @@ class NBoardView extends Component {
                 this.setState({niname: data.niname})
                 // $('#is_Swt_regdate').val(data.regdate)
                 // $('#is_Swt_niname').val(data.niname)
-                // $('#is_Swt_toolname').val(data.title)
+                $('#is_Swt_toolname').val(data.title)
                 // $('#is_Swt_demo_site').val(data.swt_demo_site)
                 // $('#is_Giturl').val(data.swt_github_url)
-                // $('#is_Comments').val(data.cont)
+                $('#is_Comments').val(data.cont)
                 //$('#is_Swt_function').val(data.swt_function)
                 var manualName = data.swt_manual_path.replace('/swmanual/','')
                 var fileName = data.swt_big_imgpath.replace('/image/','')
@@ -81,20 +76,7 @@ class NBoardView extends Component {
             }
             $('#is_Swt_toolname').removeClass('border_validate_err');
 
-            // if(this.Swt_demo_site_checker === '') {
-            //     $('#is_Swt_demo_site').addClass('border_validate_err');
-            //     alert('데모 URL을 다시 확인해주세요.')
-            //     return false;
-            // }
-            // $('#is_Swt_demo_site').removeClass('border_validate_err');
-
-            // if(this.Giturl_checker === '') {
-            //     $('#is_Giturl').addClass('border_validate_err');
-            //     alert('Github URL을 다시 확인해주세요.')
-            //     return false;
-            // }
-            // $('#is_Giturl').removeClass('border_validate_err');
-
+            
             if(this.Comments_checker === '') {
                 $('#is_Comments').addClass('border_validate_err');
                 alert('내용을 다시 확인해주세요.')
@@ -102,12 +84,7 @@ class NBoardView extends Component {
             }
             $('#is_Comments').removeClass('border_validate_err');
 
-            // if(this.Swt_function_checker === '') {
-            //     $('#is_Swt_function').addClass('border_validate_err');
-            //     alert('상세기능을 다시 확인해주세요.')
-            //     return false;
-            // }
-            // $('#is_Swt_function').removeClass('border_validate_err');
+           
             return true;
         }
 
@@ -226,10 +203,9 @@ class NBoardView extends Component {
                     </div>
                     <div class="bo_w re1_wrap re1_wrap_writer">
                         <form name="frm" id="frm" action="" onsubmit="" method="post" >
-                            <input id="btype_val" type="hidden" name="btype" />
-                            <input id="is_Swt_niname" type="hidden" name="niname"  />
-                            <input id="is_Swt_toolname" type="hidden" name="title"  />
-                            <input id="is_Comments" type="hidden" name="cont"  />
+                            <input id="is_Swtcode" type="hidden" name="is_Swtcode" />
+                            <input id="is_Email" type="hidden" name="is_Email" value="guest" />
+                            <input id="is_beforeSwtcode" type="hidden" name="is_beforeSwtcode" value={this.state.before_swtcode} />
                             <article class="res_w">
                                 <p class="ment" style={{"text-align": "right"}}>
                                     <span class="red">(*)</span>표시는 필수입력사항 입니다.
@@ -262,7 +238,7 @@ class NBoardView extends Component {
                                                 <label for="is_Swt_niname">작성자</label>
                                             </th>
                                             <td>
-                                                <div  name="niname" id="is_Swt_niname" class="">{this.state.niname}</div>
+                                                <input type="text"  id="is_Swt_toolname" name="niname" class="" value={this.state.niname} readonly/>
                                             </td>
                                         </tr>
                                         <tr>

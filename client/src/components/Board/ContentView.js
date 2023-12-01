@@ -24,15 +24,13 @@ class ContentView extends Component {
         }
     }
     componentDidMount () {
-        var cookie_usernm = cookie.load('niname2')
-        this.setState({niname2 : cookie_usernm})
-        
+        var cookie_usernm = cookie.load('niname');
+        this.setState({niname2 : cookie_usernm});
+
+        this.callSwToolInfoApi();
         if(this.state.niname !== this.state.niname2){
             $('.modifyclass').hide()
             $('.deleteclass').hide()
-        }else{
-            this.callSwToolInfoApi()
-            $('.saveclass').hide()
         }
     }
     
@@ -148,9 +146,9 @@ class ContentView extends Component {
                     </div>
                     <div class="bo_w re1_wrap re1_wrap_writer">
                         <form name="frm" id="frm" action="" onsubmit="" method="post" >
-                            <input id="is_Swtcode" type="hidden" name="is_Swtcode" />
+                            {/* <input id="is_Swtcode" type="hidden" name="is_Swtcode" />
                             <input id="is_Email" type="hidden" name="is_Email" value="guest" />
-                            <input id="is_beforeSwtcode" type="hidden" name="is_beforeSwtcode" value={this.state.before_swtcode} />
+                            <input id="is_beforeSwtcode" type="hidden" name="is_beforeSwtcode" value={this.state.before_swtcode} /> */}
                             <article class="res_w">
                                 
                                 <div class="tb_outline">
