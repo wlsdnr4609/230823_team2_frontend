@@ -12,7 +12,7 @@ class LoginForm extends Component {
         if(this.email_val === '' || this.pwd_val === ''){
             this.sweetalert('1. 이메일과 비밀번호를 확인해주세요.', '', 'info', '닫기')
         }else{
-            axios.post('/api/loginPost', {
+            axios.post('/api/member/loginPost', {
                 email: this.email_val,
                 pw: this.pwd_val
             })
@@ -22,50 +22,50 @@ class LoginForm extends Component {
                 var pw = response.data.pw
                 //alert("response.data="+response.data.email);
                 
-                // if(response.data.email != undefined) {
+                if(response.data.email != undefined) {
+                    this.sweetalert('로그인 되었습니다.', '', 'info', '닫기')
+                    const expires = new Date()
+                    expires.setMinutes(expires.getMinutes() + 60)
+                    cookie.save('email', response.data.email
+                        , { path: '/', expires })
+                        cookie.save('niname', response.data.niname
+                        , { path: '/', expires })
+                        cookie.save('pw', response.data.pw
+                        , { path: '/', expires })
+                    setTimeout(function() {
+                        window.location.href = '/MainForm';
+                    }.bind(this),1000);
+                } else{
+                    this.sweetalert('2. 이메일과 비밀번호를 확인해주세요.', '', 'info', '닫기')
+                }
+
+                // if(email != null && email != ''){
                 //     this.sweetalert('로그인 되었습니다.', '', 'info', '닫기')
                 //     const expires = new Date()
                 //     expires.setMinutes(expires.getMinutes() + 60)
-                //     cookie.save('email', response.data.email
+                    
+                //     axios.post('/api/loginPost', {
+                //         email: email,
+                //         niname: niname,
+                //     })
+                //     .then( response => {
+                //         cookie.save('email', response.data.token1
                 //         , { path: '/', expires })
-                //         cookie.save('niname', response.data.niname
+                //         cookie.save('niname', response.data.token2
                 //         , { path: '/', expires })
-                //         cookie.save('pw', response.data.pw
+                //         cookie.save('pw', pw
                 //         , { path: '/', expires })
+                //     })  
+                //     .catch( error => {
+                //         this.sweetalert('작업중 오류가 발생하였습니다.', error, 'error', '닫기');
+                //     });
+                    
                 //     setTimeout(function() {
-                //         window.location.href = '/MainForm';
+                //         window.location.href = '/login';
                 //     }.bind(this),1000);
-                // } else{
+                // }else{
                 //     this.sweetalert('2. 이메일과 비밀번호를 확인해주세요.', '', 'info', '닫기')
                 // }
-
-                if(email != null && email != ''){
-                    // this.sweetalert('로그인 되었습니다.', '', 'info', '닫기')
-                    const expires = new Date()
-                    expires.setMinutes(expires.getMinutes() + 60)
-                    
-                    axios.post('http://192.168.0.47:8080/api/loginPost', {
-                        email: email,
-                        niname: niname,
-                    })
-                    .then( response => {
-                        cookie.save('email', response.data.token1
-                        , { path: '/', expires })
-                        cookie.save('niname', response.data.token2
-                        , { path: '/', expires })
-                        cookie.save('pw', pw
-                        , { path: '/', expires })
-                    })  
-                    .catch( error => {
-                        this.sweetalert('작업중 오류가 발생하였습니다.', error, 'error', '닫기');
-                    });
-                    
-                    setTimeout(function() {
-                        window.location.href = '/login';
-                    }.bind(this),1000);
-                }else{
-                    this.sweetalert('2. 이메일과 비밀번호를 확인해주세요.', '', 'info', '닫기')
-                }
 
                 
             })

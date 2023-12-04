@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import axios from "axios";
 import cookie from 'react-cookies';
-import $, { data } from 'jquery';
+import $, { data } from 'jquery'; 
 
 class QBoardList extends Component {
     constructor(props) {
@@ -19,11 +19,10 @@ class QBoardList extends Component {
         var cookie_usernm = cookie.load('niname');
         this.setState({niname2 : cookie_usernm});
 
-        this.callSwToolInfoApi();
+        this.callSwToolListApi();
         if(this.state.niname !== this.state.niname2){
             $('.modifyclass').hide()
         }
-        this.callSwToolListApi()
     }
 
     callSwToolListApi = async () => {

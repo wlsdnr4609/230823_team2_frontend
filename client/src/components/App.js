@@ -63,7 +63,7 @@ class App extends Component {
       //this.setState({pw: '234'});
       let email = '';     
       let pw = '';
-      axios.post('/api/loginPost', {
+      axios.post('/api/member/loginPost', {
         //email: email,
         //pw: pw
         email: cookie.load('email'),
@@ -77,31 +77,31 @@ class App extends Component {
       }).catch( error => {
         this.noPermission();
       })
-      axios.post('http://192.168.0.47:8080/api/loginPost', {
-         token1 : cookie.load('email'),
-         token2 : cookie.load('niname') 
-      })
-      .then( response => {
-          this.state.email = response.data.token1
-          let password = cookie.load('pw')
-          if(password !== undefined){
-            axios.post('http://192.168.0.47:8080/api/loginPost', {
-              email: this.state.email,
-              is_Token : password
-            })
-            .then( response => {
-              if(response.data.email == undefined){
-                this.noPermission()
-              }
-            })
-            .catch( error => {
-              this.noPermission()
-            });
-          }else{
-            this.noPermission()
-          }
-      })
-      .catch( response => this.noPermission());
+      // axios.post('/api/loginPost', {
+      //    token1 : cookie.load('email'),
+      //    token2 : cookie.load('niname') 
+      // })
+      // .then( response => {
+      //     this.state.email = response.data.token1
+      //     let password = cookie.load('pw')
+      //     if(password !== undefined){
+      //       axios.post('/api/loginPost', {
+      //         email: this.state.email,
+      //         is_Token : password
+      //       })
+      //       .then( response => {
+      //         if(response.data.email == undefined){
+      //           this.noPermission()
+      //         }
+      //       })
+      //       .catch( error => {
+      //         this.noPermission()
+      //       });
+      //     }else{
+      //       this.noPermission()
+      //     }
+      // })
+      // .catch( response => this.noPermission());
     }
   }
 
@@ -148,8 +148,6 @@ class App extends Component {
         <Route path='/ReRegister' component={ReRegister} />
         <Route path='/CarRegister' component={CarRegister} />
         <Route path='/PwChangeForm/:email/:token' component={PwChangeForm} />
-
-
 
         <Footer/>
       </div>

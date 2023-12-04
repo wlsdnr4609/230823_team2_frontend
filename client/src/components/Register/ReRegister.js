@@ -25,7 +25,7 @@ class ReRegister extends Component {
     }
    
     callSwToolInfoApi = async () => {
-        axios.post('/api/read', {
+        axios.post('/api/member/read', {
             mid: this.state.before_swtcode,
         })
         .then( response => {            
@@ -189,7 +189,7 @@ class ReRegister extends Component {
 
         if(this.fnValidate()){
             this.state.niname = this.niname_val_checker
-            axios.post('/api/ninameCk', {
+            axios.post('/api/member/ninameCk', {
                 niname: this.niname_val_checker
             })
             .then( response => {
@@ -220,7 +220,7 @@ class ReRegister extends Component {
             var Json_form = JSON.stringify(jsonstr).replace(/\"/gi,'')
             Json_form = "{\"" +Json_form.replace(/\&/g,'\",\"').replace(/=/gi,'\":"')+"\"}";
            
-            axios.post('/api/loginPost', Json_form, {
+            axios.post('/api/member/loginPost', Json_form, {
                 headers: {
                   'Content-Type': 'application/json',
                 },
@@ -285,6 +285,56 @@ class ReRegister extends Component {
           })
     }
 
+
+    deleteSwtool = (e) => {
+        var event_target = e.target
+        this.sweetalertDelete('정말 탈퇴하시겠습니까?', function() {
+            axios.post('/api/member/register', {
+                // bid : this.state.before_swtcode
+                mid : event_target.getAttribute('id')
+            })
+            .then( response => {                
+            }).catch( error => {alert('5. 작업중 오류가 발생하였습니다.');return false;} );
+        }.bind(this))
+
+        
+            cookie.remove('email', { path: '/'});
+            cookie.remove('niname', { path: '/'});
+            cookie.remove('pw', { path: '/'});
+            window.location.href = '/MainForm';
+        
+        
+    } 
+
+    sweetalertDelete = (title, callbackFunc) => {
+        Swal.fire({
+            title: title,
+            text: "",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes'
+          }).then((result) => {
+            if (result.value) {
+              Swal.fire(
+                'Deleted!',
+                '탈퇴되었습니다.',
+                'success'
+              )
+              setTimeout(function() {
+                this.props.history.push('/MainForm');
+                }.bind(this),1500
+            );
+            }else{
+                return false;
+            }
+            callbackFunc()
+          })
+    }
+
+
+    
     render () {
         return (
             <div>
@@ -360,8 +410,10 @@ class ReRegister extends Component {
                                 <div className="btn_confirm">
                                     <div className="bt_ty bt_ty2 submit_ty1" 
                                     onClick={(e) => this.submitClick('modify', e)}>수정</div>
-                                    <div className="bt_ty bt_ty2 submit_ty1" 
-                                    onClick={(e) => this.submitClick('exit', e)}>탈퇴</div>
+                                    {/* <div className="bt_ty bt_ty2 submit_ty1" 
+                                    onClick={(e) => this.deleteSwtool('exit', e)}>탈퇴</div> */}
+                                    <a href="javascript:" className="bt_ty bt_ty2 submit_ty1 deleteclass" id={this.state.before_swtcode}
+                                        onClick={(e) => this.deleteSwtool('delete', e)}>탈퇴</a>
                                 </div>
                             </form>
                         </div>

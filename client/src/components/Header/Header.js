@@ -51,7 +51,7 @@ class Header extends Component {
     }
 
     callSessionInfoApi = (type) => {
-        axios.post('http://192.168.0.47:8080/api/loginPost', {
+        axios.post('/api/member/loginPost', {
             token1 : cookie.load('email') 
             , token2 : cookie.load('niname') 
         })

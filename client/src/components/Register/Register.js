@@ -143,7 +143,7 @@ class Register extends Component {
 
         if(this.fnValidate()){
             this.state.full_email = this.email_val_checker+'@'+this.email2_val_checker
-            axios.post('/api/emailCk', {
+            axios.post('/api/member/emailCk', {
                 email: this.email_val_checker+'@'+this.email2_val_checker
             })
             .then( response => {
@@ -167,7 +167,7 @@ class Register extends Component {
 
         if(this.fnValidate()){
             this.state.niname = this.niname_val_checker
-            axios.post('/api/ninameCk', {
+            axios.post('/api/member/ninameCk', {
                 niname: this.niname_val_checker
             })
             .then( response => {
@@ -175,7 +175,7 @@ class Register extends Component {
                     const dupli_count = response.data.mid;
                     if(dupli_count !== 0){
                         $('#niname_val').addClass('border_validate_err');
-                        this.sweetalert('이미 존재하는 이메일입니다.', '', 'info', '닫기')
+                        this.sweetalert('이미 존재하는 닉네임입니다.', '', 'info', '닫기')
                     }else{
                         $('#niname_val').removeClass('border_validate_err');
                         this.fnSignInsert('signup', e)
@@ -195,13 +195,13 @@ class Register extends Component {
 
 
 
-            axios.post('/api/register', Json_form, {
+            axios.post('/api/member/register', Json_form, {
                 headers: {
                   'Content-Type': 'application/json',
                 },
               })
             .then( response => {
-                if( response.data == "succ"){
+                if( response.data == "success"){
                     if(type == 'signup'){
                         this.sweetalertSucc('회원가입이 완료되었습니다.', false)
                     }else if(type == "modify"){

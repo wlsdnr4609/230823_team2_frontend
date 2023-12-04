@@ -13,6 +13,7 @@ class ContentView extends Component {
             selectedFile: null,  
             likeCnt: 0,
             like: '',
+            reply: '',
             replies: [], 
             title: '',
             cont: '', 
@@ -25,14 +26,14 @@ class ContentView extends Component {
         } 
     }
     componentDidMount () {
-        var cookie_usernm = cookie.load('niname');
-        this.setState({niname2 : cookie_usernm});
+        // var cookie_usernm = cookie.load('niname');
+        // this.setState({niname2 : cookie_usernm});
 
-        this.callSwToolInfoApi();
-        if(this.state.niname !== this.state.niname2){
-            $('.modifyclass').hide()
-            $('.deleteclass').hide()
-        }
+        // this.callSwToolInfoApi();
+        // if(this.state.niname !== this.state.niname2){
+        //     $('.modifyclass').hide()
+        //     $('.deleteclass').hide()
+        // }
         
     }
     
@@ -120,36 +121,37 @@ class ContentView extends Component {
 
     // regeistComent = (e) => {
     //     this.setState({
-    //         comment: e.target.value,
+    //         reply: e.target.value,
     //     });
     // };
-    // inputComment = (e) => {
+    // inputreply = (e) => {
     //     const add = this.state.replies;
-    //     add.push(this.state.comment);
+    //     add.push(this.state.reply);
     //     this.setState({
     //         replies: this.state.replies,
-    //         comment: '',
+    //         reply: '',
     //     });
     // };
     // PressClick = (e) => {
-    //     this.inputComment();
+    //     this.inputreply();
     // };
     // pressEnter = (e) => {
     //     if (e.key === 'Enter') {
-    //         this.inputComment();
+    //         this.inputreply();
     //     }
     // };
 
 
    
     submitClick = async (type, e) => {
+        this.replies_val_checker = $('#is_replies').val();
         this.fnValidate = (e) => {
-            if(this.Swt_replies_checker === '') {
-                $('#is_Swt_replies').addClass('border_validate_err');
+            if(this.replies_val_checker === '') {
+                $('#is_replies').addClass('border_validate_err');
                 alert('댓글을 다시 확인해주세요.')
                 return false;
             }
-            $('#is_Swt_replies').removeClass('border_validate_err');
+            $('#is_replies').removeClass('border_validate_err');
 
             return true;
         }
@@ -158,7 +160,7 @@ class ContentView extends Component {
             jsonstr = decodeURIComponent(jsonstr);
             var Json_form = JSON.stringify(jsonstr).replace(/\"/gi,'')
             Json_form = "{\"" +Json_form.replace(/\&/g,'\",\"').replace(/=/gi,'\":"')+"\"}";
-            alert(Json_form);
+            //alert(Json_form);
 
             axios.post('http://192.168.0.83:8080/api/replies', Json_form, {
                 headers: {
@@ -187,7 +189,7 @@ class ContentView extends Component {
             }
         })
         .catch( error => {alert('작업중 오류가 발생하였습니다.');return false;} );
-        alert(this.state.before_swtcode);
+        // alert(this.state.before_swtcode);
     }
 
     RepliesListAppend = () => {
@@ -200,11 +202,14 @@ class ContentView extends Component {
             result.push(
                 <tr>
                     <td>{data.replyer}+": "+{data.replytext}</td>
-                    <td>{data.regdate}</td>
                 </tr>
             )
-        }
+        } alert(RepliesList.data);
         return result
+    }
+
+    likeSwtool = () => {
+        this.setState({ like: this.state.likeCnt + 1 });
     }
 
 
@@ -267,29 +272,34 @@ class ContentView extends Component {
                                             <td>
                                                 {/* <img src={require("../../img/layout/carlogo001.png")} height="30px" width="30px" alt=""/> */}
                                                 <div name="like" id="is_like" >
-                                                    <span onClick={ ()=> {this.state.like (this.state.likeCnt + 1)} }>❤️</span>
+                                                    <span onClick={(e) => this.likeSwtool('like', e)}>❤️</span>
+                                                    {/* onClick={(e) => this.likeSwtool('like', e)}
+                                                    onClick={ ()=> {this.state.like (this.state.likeCnt + 1)} } */}
                                                     { this.state.like }
                                                 </div>
                                             </td>
                                         </tr>
                                         <tr>
+                                            <th>
+                                            </th>
                                             <td>
-                                                <input type="text" name="replytext" id="is_replies" class="" value={this.state.append_RepliesList} readonly="readonly" />
+                                                <div>{this.state.append_RepliesList}</div>
+                                                {/* <input type="text" name="replytext" id="is_replies" class="" value={this.state.append_RepliesList} readonly="readonly" /> */}
                                             </td>
                                         </tr>
                                         <tr>
                                             <th>
-                                                <label for="is_repliy">댓글</label>
+                                                <label for="is_replies">댓글</label>
                                             </th>
                                             <td>
                                             
                                                 <input type="text" name="replytext" id="is_replies" class="" 
                                                     onChange={this.regeistComent}
                                                     onKeyPress={this.pressEnter}
-                                                    // value={this.state.comment}
+                                                    value={this.state.reply}
                                                 />
-                                                <label className="btn_replies" onClick={(e) => this.submitClick('save', e)}>등록</label>
-                                                
+                                                <button className="btn_replies" onClick={(e) => this.submitClick('save', e)}>등록</button>
+                                                {/* <button className="upload" onClick={this.PressClick}>등록</button> */}
                                             </td>
                                         </tr>
                                        

@@ -132,7 +132,7 @@ class NBoardView extends Component {
 
     handleFileInput(type, e){
         if(type =='file'){
-            $('#imagefile').val(e.target.files[0].name)
+            $('#imagefile').val(e.target.name)
         }
         // else if(type =='file2'){
         //     $('#imagefile2').val(e.target.files[0].name)
@@ -140,7 +140,7 @@ class NBoardView extends Component {
         //     $('#manualfile').val(e.target.files[0].name)
         // }
         this.setState({
-          selectedFile : e.target.files[0],
+          selectedFile : e.target,
         })
         setTimeout(function() {
             if(type =='manual'){
