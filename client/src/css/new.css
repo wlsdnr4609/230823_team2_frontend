@@ -764,6 +764,6 @@ td.check_ty1 label:after{margin-top: 7px;}
 #is_Swt_toolname{width: 980px; border: 1px solid #ddd; height: 50px;}
 #is_Comments{width: 980px; border: 1px solid #ddd; height: 500px;}
 #is_repliy{width: 600px; border: 1px solid #ddd; height: 50px; margin-right: 18px;}
-.btn_repliy {box-sizing: border-box;display:inline-block;border:1px solid #ddd; font-size: 15px; color: #a1a1a1; background: url(../img/sub/file_bg.png) left center; border-radius: 5px;width:82px;height:30px; line-height:28px;text-align:center;vertical-align:middle; cursor: pointer; margin-right: 18px;}
+.btn_replies {box-sizing: border-box;display:inline-block;border:1px solid #ddd; font-size: 15px; color: #a1a1a1; background: url(../img/sub/file_bg.png) left center; border-radius: 5px;width:82px;height:30px; line-height:28px;text-align:center;vertical-align:middle; cursor: pointer; margin-right: 18px;}
 #replies_underLine{border-bottom: 1px solid #ddd; width: 600px;}
 #email{height: 45px; padding: 14px 0; text-align: left; font-size: 16px; width: 100%;}

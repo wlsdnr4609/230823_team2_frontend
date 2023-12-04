@@ -19,6 +19,14 @@ class ContentView2 extends Component {
         var cookie_usernm = cookie.load('niname')
         this.setState({niname : cookie_usernm})
 
+        this.callSwToolInfoApi();
+        /*
+        if(this.state.niname !== this.state.niname2){
+            $('.modifyclass').hide()
+            $('.deleteclass').hide()
+        }
+        */
+        
         // if(this.state.before_swtcode == 'register'){
         //     $('.modifyclass').hide()
         // }else{
@@ -28,6 +36,7 @@ class ContentView2 extends Component {
     }
 
     callSwToolInfoApi = async () => {
+        alert("this.state.before_swtcode="+this.state.before_swtcode);
         axios.post('http://192.168.0.83:8080/api/read', {
             bid: this.state.before_swtcode,
         })
@@ -80,20 +89,7 @@ class ContentView2 extends Component {
             }
             $('#is_Swt_toolname').removeClass('border_validate_err');
 
-            // if(this.Swt_demo_site_checker === '') {
-            //     $('#is_Swt_demo_site').addClass('border_validate_err');
-            //     alert('데모 URL을 다시 확인해주세요.')
-            //     return false;
-            // }
-            // $('#is_Swt_demo_site').removeClass('border_validate_err');
-
-            // if(this.Giturl_checker === '') {
-            //     $('#is_Giturl').addClass('border_validate_err');
-            //     alert('Github URL을 다시 확인해주세요.')
-            //     return false;
-            // }
-            // $('#is_Giturl').removeClass('border_validate_err');
-
+            
             if(this.Comments_checker === '') {
                 $('#is_Comments').addClass('border_validate_err');
                 alert('내용을 다시 확인해주세요.')
@@ -101,12 +97,7 @@ class ContentView2 extends Component {
             }
             $('#is_Comments').removeClass('border_validate_err');
 
-            // if(this.Swt_function_checker === '') {
-            //     $('#is_Swt_function').addClass('border_validate_err');
-            //     alert('상세기능을 다시 확인해주세요.')
-            //     return false;
-            // }
-            // $('#is_Swt_function').removeClass('border_validate_err');
+           
             return true;
         }
 

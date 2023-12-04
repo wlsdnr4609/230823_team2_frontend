@@ -25,7 +25,7 @@ class ReRegister extends Component {
     }
    
     callSwToolInfoApi = async () => {
-        axios.post('http://192.168.0.47:8080/api/read', {
+        axios.post('/api/read', {
             mid: this.state.before_swtcode,
         })
         .then( response => {            

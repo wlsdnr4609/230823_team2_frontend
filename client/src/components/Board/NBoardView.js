@@ -36,22 +36,22 @@ class NBoardView extends Component {
                 // $('#is_Giturl').val(data.swt_github_url)
                 $('#is_Comments').val(data.cont)
                 //$('#is_Swt_function').val(data.swt_function)
-                var manualName = data.swt_manual_path.replace('/swmanual/','')
+                // var manualName = data.swt_manual_path.replace('')
                 var fileName = data.swt_big_imgpath.replace('/image/','')
-                var fileName2 = data.swt_imagepath.replace('/image/','')
+                // var fileName2 = data.swt_imagepath.replace('/image/','')
                 $('#upload_img').prepend('<img id="uploadimg" src="'+data.swt_big_imgpath+'"/>')
-                $('#upload_img2').prepend('<img id="uploadimg2" src="'+data.swt_imagepath+'"/>')
+                // $('#upload_img2').prepend('<img id="uploadimg2" src="'+data.swt_imagepath+'"/>')
 
                 $('#imagefile').val(fileName)
-                $('#imagefile2').val(fileName2)
-                $('#manualfile').val(manualName)
+                // $('#imagefile2').val(fileName2)
+                // $('#manualfile').val(manualName)
 
                 if($('#uploadimg').attr('src').indexOf("null") > -1){
                     $('#uploadimg').hide()
                 }
-                if($('#uploadimg2').attr('src').indexOf("null") > -1){
-                    $('#uploadimg2').hide()
-                }
+                // if($('#uploadimg2').attr('src').indexOf("null") > -1){
+                //     $('#uploadimg2').hide()
+                // }
             } catch (error) {
                 alert('작업중 오류가 발생하였습니다.')
             }
@@ -62,10 +62,7 @@ class NBoardView extends Component {
     submitClick = async (type, e) => {
 
         this.Swt_toolname_checker = $('#is_Swt_toolname').val();
-        // this.Swt_demo_site_checker = $('#is_Swt_demo_site').val();
-        // this.Giturl_checker = $('#is_Giturl').val();
         this.Comments_checker = $('#is_Comments').val();
-        // this.Swt_function_checker = $('#is_Swt_function').val();
         
 
         this.fnValidate = (e) => {
@@ -136,11 +133,12 @@ class NBoardView extends Component {
     handleFileInput(type, e){
         if(type =='file'){
             $('#imagefile').val(e.target.files[0].name)
-        }else if(type =='file2'){
-            $('#imagefile2').val(e.target.files[0].name)
-        }else if(type =='manual'){
-            $('#manualfile').val(e.target.files[0].name)
         }
+        // else if(type =='file2'){
+        //     $('#imagefile2').val(e.target.files[0].name)
+        // }else if(type =='manual'){
+        //     $('#manualfile').val(e.target.files[0].name)
+        // }
         this.setState({
           selectedFile : e.target.files[0],
         })
@@ -154,23 +152,23 @@ class NBoardView extends Component {
         );
     }
 
-    handlePostMenual(){
-        const formData = new FormData();
-        formData.append('file', this.state.selectedFile);
-        return axios.post("/api/upload?type=uploads/swmanual/", formData).then(res => {
-            this.setState({menualName : res.data.filename})
-            $('#is_MenualName').remove()
-            $('#upload_menual').prepend('<input id="is_MenualName" type="hidden"'
-            +'name="is_MenualName" value="/swmanual/'+this.state.menualName+'"}/>')
-        }).catch(error => {
-            alert('작업중 오류가 발생하였습니다.', error, 'error', '닫기')
-        })
-    }    
+    // handlePostMenual(){
+    //     const formData = new FormData();
+    //     formData.append('file', this.state.selectedFile);
+    //     return axios.post("http://192.168.0.83:8080/api/upload", formData).then(res => {
+    //         this.setState({menualName : res.data.filename})
+    //         $('#is_MenualName').remove()
+    //         $('#upload_menual').prepend('<input id="is_MenualName" type="hidden"'
+    //         +'name="files" '+this.state.menualName+'"}/>')
+    //     }).catch(error => {
+    //         alert('9. 작업중 오류가 발생하였습니다.', error, 'error', '닫기')
+    //     })
+    // }    
 
     handlePostImage(type){
         const formData = new FormData();
         formData.append('file', this.state.selectedFile);
-        return axios.post("/api/upload?type=uploads/image/", formData).then(res => {
+        return axios.post("http://192.168.0.83:8080/api/upload", formData).then(res => {
             if(type =='file'){
                 this.setState({fileName : res.data.filename})
                 $('#is_MainImg').remove()
@@ -179,17 +177,18 @@ class NBoardView extends Component {
                 +this.state.fileName+'"/>')
                 $('#upload_img').prepend('<input id="is_MainImg" type="hidden"'
                 +'name="is_MainImg" value="/image/'+this.state.fileName+'"}/>')
-            }else if(type =='file2'){
-                this.setState({fileName2 : res.data.filename})
-                $('#is_LabelImg').remove()
-                $('#uploadimg2').remove()
-                $('#upload_img2').prepend('<img id="uploadimg2" src="/image/'
-                +this.state.fileName2+'"/>')
-                $('#upload_img2').prepend('<input id="is_LabelImg" type="hidden"'
-                +'name="is_LabelImg" value="/image/'+this.state.fileName2+'"}/>')
             }
+            // else if(type =='file2'){
+            //     this.setState({fileName2 : res.data.filename})
+            //     $('#is_LabelImg').remove()
+            //     $('#uploadimg2').remove()
+            //     $('#upload_img2').prepend('<img id="uploadimg2" src="/image/'
+            //     +this.state.fileName2+'"/>')
+            //     $('#upload_img2').prepend('<input id="is_LabelImg" type="hidden"'
+            //     +'name="is_LabelImg" value="/image/'+this.state.fileName2+'"}/>')
+            // }
         }).catch(error => {
-            alert('작업중 오류가 발생하였습니다.')            
+            alert('8. 작업중 오류가 발생하였습니다.')            
         })
 
     }
@@ -238,7 +237,7 @@ class NBoardView extends Component {
                                                 <label for="is_Swt_niname">작성자</label>
                                             </th>
                                             <td>
-                                                <input type="text"  id="is_Swt_toolname" name="niname" class="" value={this.state.niname} readonly/>
+                                                <input type="text"  id="is_Swt_toolname" name="niname" class="" value={this.state.niname} readonly="readonly"/>
                                             </td>
                                         </tr>
                                         <tr>
@@ -257,7 +256,7 @@ class NBoardView extends Component {
                                                 <textarea  id="is_Comments" name="cont" rows="" cols=""></textarea>
                                             </td>
                                         </tr>
-                                        <tr class="div_tb_tr fileb">
+                                        {/* <tr class="div_tb_tr fileb">
                                             <th>
                                             <label for="is_Swt_file">첨부파일<span class="red"></span></label>
                                             </th>
@@ -272,7 +271,7 @@ class NBoardView extends Component {
                                                 </div>
                                             </td>
                                             
-                                        </tr>
+                                        </tr> */}
                                         <tr>
                                             <th>
                                                 이미지파일

@@ -123,7 +123,7 @@ class Header extends Component {
                     <ul className="af">
                          
                         <li className="menulist">
-                            <Link to={'/NBoardList'}>충전소 검색</Link>
+                            <Link to={'/SoftwereView'}>충전소 검색</Link>
                         </li>
                         <li className="menulist">
                             <Link to={'/NBoardList'}>공지사항</Link>

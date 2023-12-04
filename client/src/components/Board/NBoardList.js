@@ -43,7 +43,7 @@ class NBoardList extends Component {
                         <Link to={'ContentView/'+data.bid }>{data.title}</Link></td>
                     <td>{data.niname}</td>                    
                     <td>{data.counts}</td>
-                    <td>{data.regdateate}</td>
+                    <td>{data.regdate}</td>
                 </tr>
             )
         }

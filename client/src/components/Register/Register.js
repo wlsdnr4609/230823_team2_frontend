@@ -143,12 +143,12 @@ class Register extends Component {
 
         if(this.fnValidate()){
             this.state.full_email = this.email_val_checker+'@'+this.email2_val_checker
-            axios.post('/api/emailCK', {
+            axios.post('/api/emailCk', {
                 email: this.email_val_checker+'@'+this.email2_val_checker
             })
             .then( response => {
                 try {
-                    const dupli_count = response.data.json[0].mid;
+                    const dupli_count = response.data.mid;
                     if(dupli_count !== 0){
                         $('#email_val').addClass('border_validate_err');
                         $('#email2_val').addClass('border_validate_err');
@@ -156,6 +156,28 @@ class Register extends Component {
                     }else{
                         $('#email_val').removeClass('border_validate_err');
                         $('#email2_val').removeClass('border_validate_err');
+                        this.fnSignInsert('signup', e)
+                    }
+                } catch (error) {
+                    this.sweetalert('작업중 오류가 발생하였습니다.', error, 'error', '닫기')
+                }
+            })
+            .catch( response => { return false; } );
+        }
+
+        if(this.fnValidate()){
+            this.state.niname = this.niname_val_checker
+            axios.post('/api/ninameCk', {
+                niname: this.niname_val_checker
+            })
+            .then( response => {
+                try {
+                    const dupli_count = response.data.mid;
+                    if(dupli_count !== 0){
+                        $('#niname_val').addClass('border_validate_err');
+                        this.sweetalert('이미 존재하는 이메일입니다.', '', 'info', '닫기')
+                    }else{
+                        $('#niname_val').removeClass('border_validate_err');
                         this.fnSignInsert('signup', e)
                     }
                 } catch (error) {

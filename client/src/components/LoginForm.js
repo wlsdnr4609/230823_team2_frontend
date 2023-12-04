@@ -22,39 +22,38 @@ class LoginForm extends Component {
                 var pw = response.data.pw
                 //alert("response.data="+response.data.email);
                 
-                if(response.data.email != undefined) {
-                    this.sweetalert('로그인 되었습니다.', '', 'info', '닫기')
-                    const expires = new Date()
-                    expires.setMinutes(expires.getMinutes() + 60)
-                    cookie.save('email', response.data.email
-                        , { path: '/', expires })
-                        cookie.save('niname', response.data.niname
-                        , { path: '/', expires })
-                        cookie.save('pw', response.data.pw
-                        , { path: '/', expires })
-                    setTimeout(function() {
-                        window.location.href = '/MainForm';
-                    }.bind(this),1000);
-                } else{
-                    this.sweetalert('2. 이메일과 비밀번호를 확인해주세요.', '', 'info', '닫기')
-                }
+                // if(response.data.email != undefined) {
+                //     this.sweetalert('로그인 되었습니다.', '', 'info', '닫기')
+                //     const expires = new Date()
+                //     expires.setMinutes(expires.getMinutes() + 60)
+                //     cookie.save('email', response.data.email
+                //         , { path: '/', expires })
+                //         cookie.save('niname', response.data.niname
+                //         , { path: '/', expires })
+                //         cookie.save('pw', response.data.pw
+                //         , { path: '/', expires })
+                //     setTimeout(function() {
+                //         window.location.href = '/MainForm';
+                //     }.bind(this),1000);
+                // } else{
+                //     this.sweetalert('2. 이메일과 비밀번호를 확인해주세요.', '', 'info', '닫기')
+                // }
 
-                /*
-                if(userid != null && userid != ''){
+                if(email != null && email != ''){
                     // this.sweetalert('로그인 되었습니다.', '', 'info', '닫기')
                     const expires = new Date()
                     expires.setMinutes(expires.getMinutes() + 60)
                     
                     axios.post('http://192.168.0.47:8080/api/loginPost', {
-                        email: userid,
-                        niname: username,
+                        email: email,
+                        niname: niname,
                     })
                     .then( response => {
                         cookie.save('email', response.data.token1
                         , { path: '/', expires })
                         cookie.save('niname', response.data.token2
                         , { path: '/', expires })
-                        cookie.save('pw', upw
+                        cookie.save('pw', pw
                         , { path: '/', expires })
                     })  
                     .catch( error => {
@@ -67,7 +66,6 @@ class LoginForm extends Component {
                 }else{
                     this.sweetalert('2. 이메일과 비밀번호를 확인해주세요.', '', 'info', '닫기')
                 }
-                */
 
                 
             })
@@ -83,72 +81,72 @@ class LoginForm extends Component {
             confirmButtonText: confirmButtonText
           })
     }
+    //비밀번호 잊어버렸을때 비밀번호 변경
+    // pwdResetClick = () => {
+    //     $('.signin').hide();
+    //     $('.chgpw').fadeIn();
+    //     $('.chgpw').css('display','table-cell');
+    // }
 
-    pwdResetClick = () => {
-        $('.signin').hide();
-        $('.chgpw').fadeIn();
-        $('.chgpw').css('display','table-cell');
-    }
+    // pwdResetCancleClick = () => {
+    //     $('.chgpw').hide();
+    //     $('.signin').fadeIn();
+    //     $('.signin').css('display','table-cell');
+    // }
 
-    pwdResetCancleClick = () => {
-        $('.chgpw').hide();
-        $('.signin').fadeIn();
-        $('.signin').css('display','table-cell');
-    }
-
-    pwdResetConfim = (e) => {
-        this.reset_email = $('#reset_email_val').val();
-        this.reset_name = $('#reset_name_val').val();
-        if(this.reset_email === '' || this.reset_name === ''){
-            this.sweetalert('이메일과 성명을 확인해주세요.', '', 'info', '닫기')
-        }else{
-            axios.post('/api/LoginForm?type=pwreset', {
-                is_Email: this.reset_email,
-                is_Name: this.reset_name,
-            })
-            .then( response => {
-                var userpassword = response.data.json[0].userpassword
-                userpassword = userpassword.replace(/\//gi,"가")
+    // pwdResetConfim = (e) => {
+    //     this.reset_email = $('#reset_email_val').val();
+    //     this.reset_name = $('#reset_name_val').val();
+    //     if(this.reset_email === '' || this.reset_name === ''){
+    //         this.sweetalert('이메일과 성명을 확인해주세요.', '', 'info', '닫기')
+    //     }else{
+    //         axios.post('/api/LoginForm?type=pwreset', {
+    //             is_Email: this.reset_email,
+    //             is_Name: this.reset_name,
+    //         })
+    //         .then( response => {
+    //             var userpassword = response.data.json[0].userpassword
+    //             userpassword = userpassword.replace(/\//gi,"가")
                 
-                if(userpassword != null && userpassword != ''){
-                    this.sendEmail(this.reset_email, 'react200 비밀번호 재설정 메일', userpassword)
-                }else{
-                    this.sweetalert('이메일과 성명을 확인해주세요.', '', 'info', '닫기')
-                }
-            })
-            .catch( error => {
-                this.sweetalert('이메일과 성명을 확인해주세요.', '', 'info', '닫기')
-            });
-        }
-    }
+    //             if(userpassword != null && userpassword != ''){
+    //                 this.sendEmail(this.reset_email, 'react200 비밀번호 재설정 메일', userpassword)
+    //             }else{
+    //                 this.sweetalert('이메일과 성명을 확인해주세요.', '', 'info', '닫기')
+    //             }
+    //         })
+    //         .catch( error => {
+    //             this.sweetalert('이메일과 성명을 확인해주세요.', '', 'info', '닫기')
+    //         });
+    //     }
+    // }
 
-    sendEmail = (email, subject, password, e) => {
-        axios.post('/api/mail', {
-            is_Email : email,
-            is_Subject : subject,
-            is_Password: password
-        })
-        .then( response => {
-            if(response.data == "succ"){
-                this.sweetalert('입력하신 이메일로 비밀번호 \n'
-                + '재설정 메일 보내드렸습니다.', '', 'info', '닫기')
-            }else{
-                this.sweetalert('작업중 오류가 발생하였습니다.', '', 'error', '닫기');
-            }
-        })
-        .catch( error => {
-            this.sweetalert('작업중 오류가 발생하였습니다.', error, 'error', '닫기');
-        });
-    }
+    // sendEmail = (email, subject, password, e) => {
+    //     axios.post('/api/mail', {
+    //         is_Email : email,
+    //         is_Subject : subject,
+    //         is_Password: password
+    //     })
+    //     .then( response => {
+    //         if(response.data == "succ"){
+    //             this.sweetalert('입력하신 이메일로 비밀번호 \n'
+    //             + '재설정 메일 보내드렸습니다.', '', 'info', '닫기')
+    //         }else{
+    //             this.sweetalert('작업중 오류가 발생하였습니다.', '', 'error', '닫기');
+    //         }
+    //     })
+    //     .catch( error => {
+    //         this.sweetalert('작업중 오류가 발생하였습니다.', error, 'error', '닫기');
+    //     });
+    // }
 
-    sweetalert = (title, contents, icon, confirmButtonText) => {
-        Swal.fire({
-            title: title,
-            text: contents,
-            icon: icon,
-            confirmButtonText: confirmButtonText
-          })
-    }
+    // sweetalert = (title, contents, icon, confirmButtonText) => {
+    //     Swal.fire({
+    //         title: title,
+    //         text: contents,
+    //         icon: icon,
+    //         confirmButtonText: confirmButtonText
+    //       })
+    // }
 
     render () {
         return (
