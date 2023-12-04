@@ -364,7 +364,7 @@ class ReRegister extends Component {
                                             <tr>
                                                 <th>닉네임</th>
                                                 <td>
-                                                    <input value='this.state.niname' id="niname_val" type="text" name="niname"
+                                                    <input value={this.state.niname} id="niname_val" type="text" name="niname"
                                                     onKeyPress={this.nameKeyPress}/>
                                                 </td>
                                             </tr>

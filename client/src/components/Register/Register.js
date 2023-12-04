@@ -7,6 +7,7 @@ class Register extends Component {
     constructor (props) {
         super(props);
         this.state = {
+            full_email:'',
         }
     }
 
@@ -104,28 +105,7 @@ class Register extends Component {
                 return false;
             }
             $('#niname_val').removeClass('border_validate_err');
-    
-            // if(this.org_val_checker ==='') {
-            //     $('#org_val').addClass('border_validate_err');
-            //     this.sweetalert('소속기관을 입력해주세요.', '', 'info', '닫기')
-            //     return false;
-            // }
-            // if(this.org_val_checker.search(/\s/) !== -1) {
-            //     $('#org_val').addClass('border_validate_err');
-            //     this.sweetalert('소속기관에 공백을 제거해 주세요.', '', 'info', '닫기')
-            //     return false;
-            // }
-            // $('#org_val').removeClass('border_validate_err');
-            // if(this.major_val_checker ==='') {
-            //     $('#major_val').addClass('border_validate_err');
-            //     this.sweetalert('전공을 입력해주세요.', '', 'info', '닫기')
-            //     return false;
-            // }
-            // if(this.major_val_checker.search(/\s/) !== -1) {
-            //     $('#major_val').addClass('border_validate_err');
-            //     this.sweetalert('전공에 공백을 제거해 주세요.', '', 'info', '닫기')
-            //     return false;
-            // }
+
             // $('#major_val').removeClass('border_validate_err');
             // if(this.phone1_val_checker ==='' || this.phone2_val_checker ===''
             // || this.phone3_val_checker ==='') {
@@ -165,27 +145,27 @@ class Register extends Component {
             .catch( response => { return false; } );
         }
 
-        if(this.fnValidate()){
-            this.state.niname = this.niname_val_checker
-            axios.post('/api/member/ninameCk', {
-                niname: this.niname_val_checker
-            })
-            .then( response => {
-                try {
-                    const dupli_count = response.data.mid;
-                    if(dupli_count !== 0){
-                        $('#niname_val').addClass('border_validate_err');
-                        this.sweetalert('이미 존재하는 닉네임입니다.', '', 'info', '닫기')
-                    }else{
-                        $('#niname_val').removeClass('border_validate_err');
-                        this.fnSignInsert('signup', e)
-                    }
-                } catch (error) {
-                    this.sweetalert('작업중 오류가 발생하였습니다.', error, 'error', '닫기')
-                }
-            })
-            .catch( response => { return false; } );
-        }
+        // if(this.fnValidate()){
+        //     this.state.niname = this.niname_val_checker
+        //     axios.post('/api/member/ninameCk', {
+        //         niname: this.niname_val_checker
+        //     })
+        //     .then( response => {
+        //         try {
+        //             const dupli_count = response.data.mid;
+        //             if(dupli_count !== 0){
+        //                 $('#niname_val').addClass('border_validate_err');
+        //                 this.sweetalert('이미 존재하는 닉네임입니다.', '', 'info', '닫기')
+        //             }else{
+        //                 $('#niname_val').removeClass('border_validate_err');
+        //                 this.fnSignInsert('signup', e)
+        //             }
+        //         } catch (error) {
+        //             this.sweetalert('작업중 오류가 발생하였습니다.', error, 'error', '닫기')
+        //         }
+        //     })
+        //     .catch( response => { return false; } );
+        // }
 
         this.fnSignInsert = async (type, e) => {
             var jsonstr = $("form[name='frm']").serialize();
@@ -201,7 +181,7 @@ class Register extends Component {
                 },
               })
             .then( response => {
-                if( response.data == "success"){
+                if( response.data == "succ"){
                     if(type == 'signup'){
                         this.sweetalertSucc('회원가입이 완료되었습니다.', false)
                     }else if(type == "modify"){
