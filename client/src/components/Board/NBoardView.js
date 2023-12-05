@@ -22,7 +22,7 @@ class NBoardView extends Component {
     }
 
     callSwToolInfoApi = async () => {
-        axios.post('http://192.168.0.83:8080/api/read', {
+        axios.post('/api/read', {
             niname: this.state.username,
         })
         .then( response => {
@@ -94,7 +94,7 @@ class NBoardView extends Component {
             //Json_form = JSON.parse(Json_form);
            
 
-            axios.post('http://192.168.0.83:8080/api/write', Json_form, {
+            axios.post('/api/write', Json_form, {
                 headers: {
                   'Content-Type': 'application/json',
                 },
@@ -168,7 +168,7 @@ class NBoardView extends Component {
     handlePostImage(type){
         const formData = new FormData();
         formData.append('file', this.state.selectedFile);
-        return axios.post("http://192.168.0.83:8080/api/upload", formData).then(res => {
+        return axios.post("/api/upload", formData).then(res => {
             if(type =='file'){
                 this.setState({fileName : res.data.filename})
                 $('#is_MainImg').remove()

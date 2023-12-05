@@ -11,7 +11,7 @@ class ContentView extends Component {
         this.state = {            
             before_swtcode: props.match.params.bid,
             selectedFile: null,  
-            likeCnt: 0,
+            likeCnt: '',
             like: '',
             reply: '',
             replies: [], 
@@ -26,14 +26,15 @@ class ContentView extends Component {
         } 
     }
     componentDidMount () {
-        // var cookie_usernm = cookie.load('niname');
-        // this.setState({niname2 : cookie_usernm});
 
-        // this.callSwToolInfoApi();
-        // if(this.state.niname !== this.state.niname2){
-        //     $('.modifyclass').hide()
-        //     $('.deleteclass').hide()
-        // }
+        this.callSwToolInfoApi();
+        if(this.state.niname !== this.state.niname2){
+            $('.modifyclass').hide()
+            $('.deleteclass').hide()
+        }else{
+            // this.callSwToolInfoApi()
+            // $('.saveclass').hide()
+        }
         
     }
     
@@ -41,20 +42,25 @@ class ContentView extends Component {
    
 
     callSwToolInfoApi = async () => {
-        axios.post('http://192.168.0.83:8080/api/read', {
+        //alert("this.state.before_swtcode="+this.state.before_swtcode);
+        axios.post('/api/read', {
             bid: this.state.before_swtcode,
         })
-        
         .then( response => {            
             try {
                 var data = response.data
+                
                 this.setState({title: data.title})
                 this.setState({cont: data.cont})
                 this.setState({niname: data.niname})
-                this.setState({like: data.like})
+                this.setState({likeCnt: data.likes})
                 this.setState({regdate: data.regdate})
-                $('#is_Swt_toolname').val(data.title)
-                $('#is_Comments').val(data.cont)
+                $('#is_niname').val(data.niname)
+                $('#is_cont').val(data.cont)
+                $('#is_title').val(data.title)
+                $('#is_like').val(data.likes)
+                
+                
                 // var manualName = data.swt_manual_path.replace('/swmanual/','')
                 // var fileName = data.swt_big_imgpath.replace('/image/','')
                 // var fileName2 = data.swt_imagepath.replace('/image/','')
@@ -82,8 +88,7 @@ class ContentView extends Component {
     deleteSwtool = (e) => {
         var event_target = e.target
         this.sweetalertDelete('정말 삭제하시겠습니까?', function() {
-            axios.post('http://192.168.0.83:8080/api/remove', {
-                // bid : this.state.before_swtcode
+            axios.post('/api/remove', {
                 bid : event_target.getAttribute('id')
             })
             .then( response => {                
@@ -162,22 +167,22 @@ class ContentView extends Component {
             Json_form = "{\"" +Json_form.replace(/\&/g,'\",\"').replace(/=/gi,'\":"')+"\"}";
             //alert(Json_form);
 
-            axios.post('http://192.168.0.83:8080/api/replies', Json_form, {
+            axios.post('/api/replies', Json_form, {
                 headers: {
                   'Content-Type': 'application/json',
                 },
               })
-              .then( response => {
-                if( response.data == "succ"){
-                        this.sweetalertSucc('등록이 완료되었습니다.', false)
-                }
-                })
+            //   .then( response => {
+            //     if( response.data == "succ"){
+            //             this.sweetalertSucc('등록이 완료되었습니다.', false)
+            //     }
+            //     })
                 .catch( error => {alert('2. 작업중 오류가 발생하였습니다.');return false;} )
                 
             }
     }
     callrepliesInfoApi = async () => {
-        axios.get('http://192.168.0.83:8080/api/replies/all/{this.state.before_swtcode}', {
+        axios.get('/api/replies/all/{this.state.before_swtcode}', {
         })
         
         .then( response => {
@@ -189,7 +194,7 @@ class ContentView extends Component {
             }
         })
         .catch( error => {alert('작업중 오류가 발생하였습니다.');return false;} );
-        // alert(this.state.before_swtcode);
+        alert(this.state.append_RepliesList);
     }
 
     RepliesListAppend = () => {
@@ -210,7 +215,12 @@ class ContentView extends Component {
 
     likeSwtool = () => {
         this.setState({ like: this.state.likeCnt + 1 });
+        axios.post('/api/write', {
+            bid: this.state.before_swtcode
+        })
     }
+
+    
 
 
 
@@ -234,35 +244,36 @@ class ContentView extends Component {
                                     <table class="table_ty1">
                                         <tr>
                                             <th>
-                                                <label for="is_Swt_toolname">작성자<span class="red"></span></label>
+                                                <label for="is_niname">작성자<span class="red"></span></label>
                                             </th>
                                             <td>
-                                                <div  name="niname" id="is_Swt_toolname" class="">{this.state.niname}</div>
+                                                {/* <div  name="niname" id="is_Swt_toolname" class="">{this.state.niname}</div> */}
+                                                <input type="text"  id="is_niname" name="niname" class="" value={this.state.niname} readonly="readonly"/>
                                             </td>
                                         </tr>
                                         <tr>
                                             <th>
-                                                <label for="is_Swt_toolname">작성일<span class="red"></span></label>
+                                                <label for="is_regdate">작성일<span class="red"></span></label>
                                             </th>
                                             <td>
-                                                <div  name="regdate" id="is_Swt_toolname" class="">{this.state.regdate}</div>
+                                                <input type="text"  name="regdate" id="is_regdate" class="" value={this.state.regdate} readonly="readonly"/>
                                             </td>
                                         </tr>
                                         <tr>
                                             <th>
-                                                <label for="is_Swt_toolname">제목<span class="red"></span></label>
+                                                <label for="is_title">제목<span class="red"></span></label>
                                             </th>
                                             <td>
-                                                <div  name="title" id="is_Swt_toolname" class="">{this.state.title}</div>
+                                                <input type="text"  name="title" id="is_title" class="" value={this.state.title} readonly="readonly"/>
                                             </td>
                                         </tr>
                                         
                                         <tr>
                                             <th>
-                                                <label for="is_Comments">내용<span class="red"></span></label>
+                                                <label for="is_cont">내용<span class="red"></span></label>
                                             </th>
                                             <td>
-                                                <div name="cont" id="is_Comments" >{this.state.cont}</div>
+                                                <input type="text" name="cont" id="is_cont" value={this.state.cont} readonly="readonly"/>
                                             </td>
                                         </tr>
                                         <tr>
@@ -271,7 +282,7 @@ class ContentView extends Component {
                                             </th>
                                             <td>
                                                 {/* <img src={require("../../img/layout/carlogo001.png")} height="30px" width="30px" alt=""/> */}
-                                                <div name="like" id="is_like" >
+                                                <div name="likes" id="is_like" >
                                                     <span onClick={(e) => this.likeSwtool('like', e)}>❤️</span>
                                                     {/* onClick={(e) => this.likeSwtool('like', e)}
                                                     onClick={ ()=> {this.state.like (this.state.likeCnt + 1)} } */}
@@ -294,9 +305,9 @@ class ContentView extends Component {
                                             <td>
                                             
                                                 <input type="text" name="replytext" id="is_replies" class="" 
-                                                    onChange={this.regeistComent}
-                                                    onKeyPress={this.pressEnter}
-                                                    value={this.state.reply}
+                                                    // onChange={this.regeistComent}
+                                                    // onKeyPress={this.pressEnter}
+                                                    // value={this.state.reply}
                                                 />
                                                 <button className="btn_replies" onClick={(e) => this.submitClick('save', e)}>등록</button>
                                                 {/* <button className="upload" onClick={this.PressClick}>등록</button> */}

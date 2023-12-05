@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from "axios";
 import Swal from 'sweetalert2';
-import $ from 'jquery';
+import $, { data } from 'jquery';
 import cookie from 'react-cookies';
 
 class ReRegister extends Component {
@@ -13,7 +13,9 @@ class ReRegister extends Component {
             before_swtcode: props.match.params.mid,
             selectedFile: null,
             email: '',
+            name: '',
             niname: '',
+            
         }
     }
     componentDidMount() {
@@ -21,7 +23,9 @@ class ReRegister extends Component {
         var cookie_userid = cookie.load('email')
         this.setState({niname : cookie_usernm})
         this.setState({email : cookie_userid})
-        // this.callSwToolListApi()
+        
+        //this.callSwToolInfoApi()
+       
     }
    
     callSwToolInfoApi = async () => {
@@ -32,7 +36,7 @@ class ReRegister extends Component {
             try {
                 var data = response.data
                 this.setState({email: data.email})
-                // this.setState({niname: data.niname})
+                this.setState({name: data.name})
                 $('#email_val').val(data.email)
                 $('#email2_val').val(data.email2)
                 $('#niname_val').val(data.niname)
@@ -87,11 +91,38 @@ class ReRegister extends Component {
             // }
             // $('#email2_val').removeClass('border_validate_err');
 
-            // if(this.pwd_val_checker ==='') {
-            //     $('#pwd_val').addClass('border_validate_err');
-            //     this.sweetalert('비밀번호를 입력해주세요.', '', 'info', '닫기')
-            //     return false;
-            // }
+            if(this.name_val_checker ==='') {
+                $('#name_val').addClass('border_validate_err');
+                this.sweetalert('이름을 입력해주세요.', '', 'info', '닫기')
+                return false;
+            }
+            if(this.name_val_checker.search(/\s/) !== -1) {
+                $('#name_val').addClass('border_validate_err');
+                this.sweetalert('이름에 공백을 제거해 주세요.', '', 'info', '닫기')
+                return false;
+            }
+            $('#name_val').removeClass('border_validate_err');
+
+
+            if(this.niname_val_checker ==='') {
+                $('#niname_val').addClass('border_validate_err');
+                this.sweetalert('닉네임을 입력해주세요.', '', 'info', '닫기')
+                return false;
+            }
+            if(this.niname_val_checker.search(/\s/) !== -1) {
+                $('#niname_val').addClass('border_validate_err');
+                this.sweetalert('닉네임에 공백을 제거해 주세요.', '', 'info', '닫기')
+                return false;
+            }
+            $('#niname_val').removeClass('border_validate_err');
+
+
+
+            if(this.pwd_val_checker ==='') {
+                $('#pwd_val').addClass('border_validate_err');
+                this.sweetalert('비밀번호를 입력해주세요.', '', 'info', '닫기')
+                return false;
+            }
             if(this.pwd_val_checker !=='') {
                 var str = this.pwd_val_checker;
                 if(str.search(/\s/) !== -1) {
@@ -121,29 +152,9 @@ class ReRegister extends Component {
             }
             $('#pwd_cnf_val').removeClass('border_validate_err');
 
-            if(this.niname_val_checker ==='') {
-                $('#niname_val').addClass('border_validate_err');
-                this.sweetalert('닉네임을 입력해주세요.', '', 'info', '닫기')
-                return false;
-            }
-            if(this.niname_val_checker.search(/\s/) !== -1) {
-                $('#niname_val').addClass('border_validate_err');
-                this.sweetalert('닉네임에 공백을 제거해 주세요.', '', 'info', '닫기')
-                return false;
-            }
-            $('#niname_val').removeClass('border_validate_err');
+           
 
-            if(this.name_val_checker ==='') {
-                $('#name_val').addClass('border_validate_err');
-                this.sweetalert('이름을 입력해주세요.', '', 'info', '닫기')
-                return false;
-            }
-            if(this.name_val_checker.search(/\s/) !== -1) {
-                $('#name_val').addClass('border_validate_err');
-                this.sweetalert('이름에 공백을 제거해 주세요.', '', 'info', '닫기')
-                return false;
-            }
-            $('#name_val').removeClass('border_validate_err');
+            
     
            
             // $('#major_val').removeClass('border_validate_err');
@@ -289,7 +300,7 @@ class ReRegister extends Component {
     deleteSwtool = (e) => {
         var event_target = e.target
         this.sweetalertDelete('정말 탈퇴하시겠습니까?', function() {
-            axios.post('/api/member/register', {
+            axios.post('/api/member/deleteMember', {
                 // bid : this.state.before_swtcode
                 mid : event_target.getAttribute('id')
             })
@@ -349,25 +360,28 @@ class ReRegister extends Component {
                                             <tr className="re_email">
                                                 <th>이메일</th>
                                                 <td>
-                                                <div  name="email" id="#email_val" class="">{this.state.email}</div>
+                                                <div  name="email" id="email_val" class="">{this.state.email}</div>
                                                 {/* <input id="email_val" type="text" name="email"/> */}
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <th>이름</th>
                                                 <td>
-                                                    <input type="text" name="name" id="name_val" class="" />
-                                                    {/* <input id="name_val" type="text" name="name"
+                                                <input id="name_val" type="text" name="name" value={this.state.name}/>
+                                                    {/* <input id="name_val" type="text" name="name" value={this.state.name}
                                                     onKeyPress={this.nameKeyPress}/> */}
                                                 </td>
                                             </tr>
+
                                             <tr>
                                                 <th>닉네임</th>
                                                 <td>
-                                                    <input value='this.state.niname' id="niname_val" type="text" name="niname"
-                                                    onKeyPress={this.nameKeyPress}/>
+                                                    <input id="niname_val" type="text" name="niname" value={this.state.niname} /> 
+                                                    
                                                 </td>
                                             </tr>
+
+                                           
                                             <tr>
                                                 <th>비밀번호</th>
                                                 <td>

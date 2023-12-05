@@ -17,7 +17,7 @@ class ContentView2 extends Component {
 
     componentDidMount () {
         var cookie_usernm = cookie.load('niname')
-        this.setState({niname : cookie_usernm})
+        this.setState({niname : cookie_usernm})  //niname=로그인한 사람
 
         this.callSwToolInfoApi();
         /*
@@ -37,7 +37,7 @@ class ContentView2 extends Component {
 
     callSwToolInfoApi = async () => {
         alert("this.state.before_swtcode="+this.state.before_swtcode);
-        axios.post('http://192.168.0.83:8080/api/read', {
+        axios.post('/api/read', {
             bid: this.state.before_swtcode,
         })
         .then( response => {
@@ -109,23 +109,23 @@ class ContentView2 extends Component {
             alert(Json_form);
 
 
-            axios.post('http://192.168.0.83:8080/api/modify', Json_form, {
+            axios.post('/api/modify', Json_form, {
                 headers: {
                   'Content_Type': 'application/json',
                 },
               })
             .then( response => {
-                if( response.data == "succ"){
-                    if(type == 'modify'){
-                        this.sweetalertSucc('수정되었습니다.', false)
-                    }
-                    setTimeout(function() {
-                        this.props.history.push('/NBoardList');
-                        }.bind(this),1500
-                    );
-                }else{
-                    alert('3. 작업중 오류가 발생하였습니다.')
-                }  
+                // if( response.data == "succ"){
+                //     if(type == 'modify'){
+                //         this.sweetalertSucc('수정되었습니다.', false)
+                //     }
+                //     setTimeout(function() {
+                //         this.props.history.push('/NBoardList');
+                //         }.bind(this),1500
+                //     );
+                // }else{
+                //     alert('3. 작업중 오류가 발생하였습니다.')
+                // }  
             })
             .catch( error => {alert('4. 작업중 오류가 발생하였습니다.');return false;} )
         

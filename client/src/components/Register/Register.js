@@ -105,28 +105,6 @@ class Register extends Component {
             }
             $('#niname_val').removeClass('border_validate_err');
     
-            // if(this.org_val_checker ==='') {
-            //     $('#org_val').addClass('border_validate_err');
-            //     this.sweetalert('소속기관을 입력해주세요.', '', 'info', '닫기')
-            //     return false;
-            // }
-            // if(this.org_val_checker.search(/\s/) !== -1) {
-            //     $('#org_val').addClass('border_validate_err');
-            //     this.sweetalert('소속기관에 공백을 제거해 주세요.', '', 'info', '닫기')
-            //     return false;
-            // }
-            // $('#org_val').removeClass('border_validate_err');
-            // if(this.major_val_checker ==='') {
-            //     $('#major_val').addClass('border_validate_err');
-            //     this.sweetalert('전공을 입력해주세요.', '', 'info', '닫기')
-            //     return false;
-            // }
-            // if(this.major_val_checker.search(/\s/) !== -1) {
-            //     $('#major_val').addClass('border_validate_err');
-            //     this.sweetalert('전공에 공백을 제거해 주세요.', '', 'info', '닫기')
-            //     return false;
-            // }
-            // $('#major_val').removeClass('border_validate_err');
             // if(this.phone1_val_checker ==='' || this.phone2_val_checker ===''
             // || this.phone3_val_checker ==='') {
             //     $('#phone1_val').addClass('border_validate_err');
@@ -201,7 +179,7 @@ class Register extends Component {
                 },
               })
             .then( response => {
-                if( response.data == "success"){
+                if( response.data == "succ"){
                     if(type == 'signup'){
                         this.sweetalertSucc('회원가입이 완료되었습니다.', false)
                     }else if(type == "modify"){
