@@ -116,7 +116,7 @@ class Register extends Component {
             // $('#phone1_val').removeClass('border_validate_err');
             // $('#phone2_val').removeClass('border_validate_err');
             // $('#phone3_val').removeClass('border_validate_err');
-            // return true;
+             return true;
         }
 
         if(this.fnValidate()){
@@ -126,7 +126,7 @@ class Register extends Component {
             })
             .then( response => {
                 try {
-                    const dupli_count = response.data.mid;
+                    const dupli_count = response.data[0].num;
                     if(dupli_count !== 0){
                         $('#email_val').addClass('border_validate_err');
                         $('#email2_val').addClass('border_validate_err');
@@ -143,47 +143,66 @@ class Register extends Component {
             .catch( response => { return false; } );
         }
 
-        if(this.fnValidate()){
-            this.state.niname = this.niname_val_checker
-            axios.post('/api/member/ninameCk', {
-                niname: this.niname_val_checker
-            })
-            .then( response => {
-                try {
-                    const dupli_count = response.data.mid;
-                    if(dupli_count !== 0){
-                        $('#niname_val').addClass('border_validate_err');
-                        this.sweetalert('이미 존재하는 닉네임입니다.', '', 'info', '닫기')
-                    }else{
-                        $('#niname_val').removeClass('border_validate_err');
-                        this.fnSignInsert('signup', e)
-                    }
-                } catch (error) {
-                    this.sweetalert('작업중 오류가 발생하였습니다.', error, 'error', '닫기')
-                }
-            })
-            .catch( response => { return false; } );
-        }
+
+        // if(this.fnValidate()){
+        //     this.state.niname = this.niname_val_checker
+        //     axios.post('/api/member/ninameCk', {
+        //         niname: this.niname_val_checker
+        //     })
+        //     .then( response => {
+        //         try {
+        //             const dupli_count = response.data;
+        //             if(dupli_count !== 0){
+        //                 $('#niname_val').addClass('border_validate_err');
+        //                 this.sweetalert('이미 존재하는 닉네임입니다.', '', 'info', '닫기')
+        //             }else{
+        //                 $('#niname_val').removeClass('border_validate_err');
+        //                 this.fnSignInsert('signup', e)
+        //             }
+        //         } catch (error) {
+        //             this.sweetalert('작업중 오류가 발생하였습니다.', error, 'error', '닫기')
+        //         }
+        //     })
+        //     .catch( response => { return false; } );
+        // }
 
         this.fnSignInsert = async (type, e) => {
             var jsonstr = $("form[name='frm']").serialize();
             jsonstr = decodeURIComponent(jsonstr);
             var Json_form = JSON.stringify(jsonstr).replace(/\"/gi,'')
             Json_form = "{\"" +Json_form.replace(/\&/g,'\",\"').replace(/=/gi,'\":"')+"\"}";
+            alert("2. "+Json_form);
+            var Json_data = JSON.parse(Json_form);
 
 
 
-            axios.post('/api/member/register', Json_form, {
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-              })
+
+            // axios.post('/api/member/register', Json_data)
+            // .then(response => {
+            //     try {
+            //         if (response.data == "succ") {
+            //             if (type == 'signup') {
+            //                 this.sweetalertSucc('회원가입이 완료되었습니다.', false)
+            //             }
+            //             setTimeout(function () {
+            //                 this.props.history.push('/LoginForm');
+            //             }.bind(this), 1500
+            //             );
+            //         }
+            //     }
+            //     catch (error) {
+            //         alert('1. 작업중 오류가 발생하였습니다.')
+            //     }
+            // })
+            // .catch(error => { alert('2. 작업중 오류가 발생하였습니다.'); return false; });
+
+
+
+            axios.post('/api/member/register', Json_data)
             .then( response => {
                 if( response.data == "succ"){
                     if(type == 'signup'){
                         this.sweetalertSucc('회원가입이 완료되었습니다.', false)
-                    }else if(type == "modify"){
-                        this.sweetalertSucc('수정이 완료되었습니다.', false)
                     }
                     setTimeout(function() {
                         this.props.history.push('/LoginForm');
@@ -213,18 +232,22 @@ class Register extends Component {
     nameKeyPress = (e) => {
         $('#name_val').removeClass('border_validate_err');
     };
+    ninameKeyPress = (e) => {
+        $('#niname_val').removeClass('border_validate_err');
+    };
 
     handleSubmit = (e) => {
         e.preventDefault();
     };
     
-    mustNumber = (id) => {
-        var pattern1 = /[0-9]/;
-        var str = $('#'+id).val();
-        if(!pattern1.test(str.substr(str.length - 1, 1))){
-            $('#'+id).val(str.substr(0, str.length-1));
-        }
-    }
+    //핸드폰번호
+    // mustNumber = (id) => {
+    //     var pattern1 = /[0-9]/;
+    //     var str = $('#'+id).val();
+    //     if(!pattern1.test(str.substr(str.length - 1, 1))){
+    //         $('#'+id).val(str.substr(0, str.length-1));
+    //     }
+    // }
 
     sweetalert = (title, contents, icon, confirmButtonText) => {
         Swal.fire({
@@ -249,10 +272,10 @@ class Register extends Component {
                                             <tr className="re_email">
                                                 <th>이메일</th>
                                                 <td>
-                                                    <input id="email_val" type="text" name="email"
+                                                    <input id="email_val" type="text" name="email1"
                                                     placeholder="이메일을 입력해주세요." onKeyPress={this.emailKeyPress}/>
                                                     <span className="e_goll">@</span>
-                                                    <select id="email2_val" name="is_Useremail2" className="select_ty1">
+                                                    <select id="email2_val" name="email2" className="select_ty1">
                                                             <option value="">선택하세요</option>
                                                             <option value='naver.com'>naver.com</option>
                                                             <option value='hanmail.net'>hanmail.net</option>
@@ -289,7 +312,7 @@ class Register extends Component {
                                                 <th>닉네임</th>
                                                 <td>
                                                     <input id="niname_val" type="text" name="niname"
-                                                    placeholder="닉네임을 입력해주세요." />
+                                                    placeholder="닉네임을 입력해주세요." onKeyPress={this.ninameKeyPress}/>
                                                 </td>
                                             </tr>
                                            
@@ -317,8 +340,8 @@ class Register extends Component {
                                     </div>
                                 </div>
                                 <div className="btn_confirm">
-                                    <div className="bt_ty bt_ty2 submit_ty1" 
-                                    onClick={(e) => this.submitClick('signup', e)}>회원가입</div>
+                                    <a href="javascript:" className="bt_ty bt_ty2 submit_ty1 modifyclass"
+                                            onClick={(e) => this.submitClick('signup', e)}>회원가입</a>
                                 </div>
                             </form>
                         </div>

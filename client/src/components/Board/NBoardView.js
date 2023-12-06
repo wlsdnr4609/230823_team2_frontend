@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import axios from "axios";
-import $ from 'jquery';
+import $, { data } from 'jquery';
 import Swal from 'sweetalert2'
 import cookie from 'react-cookies';
 
@@ -12,12 +12,13 @@ class NBoardView extends Component {
             username: props.match.params.niname,
             selectedFile: null,
             niname: '',
+            niname2: '',
         }
     }
 
     componentDidMount () {
         var cookie_usernm = cookie.load('niname')
-        this.setState({niname : cookie_usernm})
+        this.setState({niname2 : cookie_usernm})
         
     }
 
@@ -92,6 +93,9 @@ class NBoardView extends Component {
             Json_form = "{\"" +Json_form.replace(/\&/g,'\",\"').replace(/=/gi,'\":"')+"\"}";
             alert(Json_form);
             //Json_form = JSON.parse(Json_form);
+
+
+           
            
 
             axios.post('/api/write', Json_form, {
@@ -237,7 +241,7 @@ class NBoardView extends Component {
                                                 <label for="is_Swt_niname">작성자</label>
                                             </th>
                                             <td>
-                                                <input type="text"  id="is_Swt_toolname" name="niname" class="" value={this.state.niname} readonly="readonly"/>
+                                                <input type="text"  id="is_Swt_toolname" name="niname" class="" value={this.state.niname2} readonly="readonly"/>
                                             </td>
                                         </tr>
                                         <tr>

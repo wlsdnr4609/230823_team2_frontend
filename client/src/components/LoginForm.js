@@ -39,12 +39,14 @@ class LoginForm extends Component {
                     this.sweetalert('2. 이메일과 비밀번호를 확인해주세요.', '', 'info', '닫기')
                 }
 
+
+                
                 // if(email != null && email != ''){
                 //     this.sweetalert('로그인 되었습니다.', '', 'info', '닫기')
                 //     const expires = new Date()
                 //     expires.setMinutes(expires.getMinutes() + 60)
                     
-                //     axios.post('/api/loginPost', {
+                //     axios.post('/api/member/loginPost', {
                 //         email: email,
                 //         niname: niname,
                 //     })
@@ -68,6 +70,9 @@ class LoginForm extends Component {
                 // }
 
                 
+
+
+
             })
             .catch( error => {this.sweetalert('3. 이메일과 비밀번호를 확인해주세요.', '', 'info', '닫기')} );
         }

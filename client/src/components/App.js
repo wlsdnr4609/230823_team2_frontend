@@ -63,7 +63,7 @@ class App extends Component {
       //this.setState({pw: '234'});
       let email = '';     
       let pw = '';
-      axios.post('/api/member/loginPost', {
+      axios.post('/api/member/loginCookie', {
         //email: email,
         //pw: pw
         email: cookie.load('email'),
@@ -77,33 +77,39 @@ class App extends Component {
       }).catch( error => {
         this.noPermission();
       })
-      // axios.post('/api/loginPost', {
-      //    token1 : cookie.load('email'),
-      //    token2 : cookie.load('niname') 
-      // })
-      // .then( response => {
-      //     this.state.email = response.data.token1
-      //     let password = cookie.load('pw')
-      //     if(password !== undefined){
-      //       axios.post('/api/loginPost', {
-      //         email: this.state.email,
-      //         is_Token : password
-      //       })
-      //       .then( response => {
-      //         if(response.data.email == undefined){
-      //           this.noPermission()
-      //         }
-      //       })
-      //       .catch( error => {
-      //         this.noPermission()
-      //       });
-      //     }else{
-      //       this.noPermission()
-      //     }
-      // })
-      // .catch( response => this.noPermission());
     }
   }
+    
+
+
+
+    //   axios.post('/api/member/loginPost', {
+    //      token1 : cookie.load('email'),
+    //      token2 : cookie.load('niname') 
+    //   })
+    //   .then( response => {
+    //       this.state.email = response.data.token1
+    //       let password = cookie.load('pw')
+    //       if(password !== undefined){
+    //         axios.post('/api/member/loginPost', {
+    //           email: this.state.email,
+    //           is_Token : password
+    //         })
+    //         .then( response => {
+    //           if(response.data.email == undefined){
+    //             this.noPermission()
+    //           }
+    //         })
+    //         .catch( error => {
+    //           this.noPermission()
+    //         });
+    //       }else{
+    //         this.noPermission()
+    //       }
+    //   })
+    //   .catch( response => this.noPermission());
+    //  }
+  
 
   noPermission = (e) => {
     if(window.location.hash != 'nocookie'){
@@ -145,7 +151,7 @@ class App extends Component {
         <Route path='/SoftwareView/:swtcode' component={SoftwareView} />
         <Route path='/Register' component={Register} />
         <Route path='/Register_co' component={Register_co} />
-        <Route path='/ReRegister' component={ReRegister} />
+        <Route path='/ReRegister/' component={ReRegister} />
         <Route path='/CarRegister' component={CarRegister} />
         <Route path='/PwChangeForm/:email/:token' component={PwChangeForm} />
 

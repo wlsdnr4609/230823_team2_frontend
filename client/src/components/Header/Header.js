@@ -83,7 +83,6 @@ class Header extends Component {
 
 
 
-
     logout = async e => {
         cookie.remove('email', { path: '/'});
         cookie.remove('niname', { path: '/'});
