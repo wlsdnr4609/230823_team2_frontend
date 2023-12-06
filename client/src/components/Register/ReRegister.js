@@ -76,37 +76,7 @@ class ReRegister extends Component {
             var pattern2 = /[a-zA-Z]/;
             var pattern3 = /[~!@#$%^&*()_+|<>?:{}]/;
 
-            // if(this.email_val_checker === '') {
-            //     $('#email_val').addClass('border_validate_err');
-            //     this.sweetalert('이메일 주소를 다시 확인해주세요.', '', 'info', '닫기')
-            //     return false;
-            // }
-            // if(this.email_val_checker.search(/\s/) !== -1) {
-            //     $('#email_val').addClass('border_validate_err');
-            //     this.sweetalert('이메일 공백을 제거해 주세요.', '', 'info', '닫기')
-            //     return false;
-            // }
-            // $('#email_val').removeClass('border_validate_err');
-
-            // if(this.email2_val_checker ==='') {
-            //     $('#email2_val').addClass('border_validate_err');
-            //     this.sweetalert('이메일 주소를 다시 확인해주세요.', '', 'info', '닫기')
-            //     return false;
-            // }
-            // $('#email2_val').removeClass('border_validate_err');
-
-            // if (this.name_val_checker === '') {
-            //     $('#name_val').addClass('border_validate_err');
-            //     this.sweetalert('이름을 입력해주세요.', '', 'info', '닫기')
-            //     return false;
-            // }
-            // if (this.name_val_checker.search(/\s/) !== -1) {
-            //     $('#name_val').addClass('border_validate_err');
-            //     this.sweetalert('이름에 공백을 제거해 주세요.', '', 'info', '닫기')
-            //     return false;
-            // }
-            // $('#name_val').removeClass('border_validate_err');
-
+           
 
             if (this.niname_val_checker === '') {
                 $('#niname_val').addClass('border_validate_err');
@@ -173,7 +143,7 @@ class ReRegister extends Component {
             // $('#phone1_val').removeClass('border_validate_err');
             // $('#phone2_val').removeClass('border_validate_err');
             // $('#phone3_val').removeClass('border_validate_err');
-            // return true;
+            return true;
         }
 
 
@@ -182,22 +152,44 @@ class ReRegister extends Component {
             this.state.niname = this.niname_val_checker
             axios.post('/api/member/ninameCk', {
                 niname: this.niname_val_checker
+                
             })
                 .then(response => {
                     try {
-                        const dupli_count = response.data.mid;
-                        if (dupli_count !== 0) {
+                        const ninameCk = response.data.niname;
+                        alert(ninameCk);
+                        if (ninameCk != null) {
                             $('#niname_val').addClass('border_validate_err');
                             this.sweetalert('이미 존재하는 닉네임입니다.', '', 'info', '닫기')
                         } else {
                             $('#niname_val').removeClass('border_validate_err');
-                            this.fnSignInsert('signup', e)
+                            this.fnSignInsert('modify', e)
                         }
                     } catch (error) {
                         this.sweetalert('작업중 오류가 발생하였습니다.', error, 'error', '닫기')
                     }
                 })
                 .catch(response => { return false; });
+        // if (this.fnValidate()) {
+        //     this.state.niname = this.niname_val_checker
+        //     axios.post('/api/member/ninameCk', {
+        //         niname: this.niname_val_checker
+        //     })
+        //         .then(response => {
+        //             try {
+        //                 const dupli_count = response.data.mid;
+        //                 if (dupli_count !== 0) {
+        //                     $('#niname_val').addClass('border_validate_err');
+        //                     this.sweetalert('이미 존재하는 닉네임입니다.', '', 'info', '닫기')
+        //                 } else {
+        //                     $('#niname_val').removeClass('border_validate_err');
+        //                     this.fnSignInsert('signup', e)
+        //                 }
+        //             } catch (error) {
+        //                 this.sweetalert('작업중 오류가 발생하였습니다.', error, 'error', '닫기')
+        //             }
+        //         })
+        //         .catch(response => { return false; });
         }
 
 
@@ -274,6 +266,15 @@ class ReRegister extends Component {
             confirmButtonText: confirmButtonText
         })
     }
+    sweetalertSucc = (title, showConfirmButton) => {
+        Swal.fire({
+            position: 'bottom-end',
+            icon: 'success',
+            title: title,
+            showConfirmButton: showConfirmButton,
+            timer: 1000
+        })
+    }
 
 
     deleteSwtool = (e) => {
@@ -286,10 +287,6 @@ class ReRegister extends Component {
                 .then(response => {
                 }).catch(error => { alert('5. 작업중 오류가 발생하였습니다.'); return false; });
         }.bind(this))
-
-
-
-
 
     }
 
@@ -360,7 +357,7 @@ class ReRegister extends Component {
                                                 <th>닉네임</th>
                                                 <td>
                                                     <input value={this.state.niname} id="niname_val" type="text" name="niname"
-                                                    onKeyPress={this.nameKeyPress}/>
+                                                    onKeyPress={this.nameKeyPress} />
                                                 </td>
                                             </tr>
 
