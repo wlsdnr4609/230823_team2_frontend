@@ -7,6 +7,7 @@ class Register extends Component {
     constructor (props) {
         super(props);
         this.state = {
+            full_email:'',
         }
     }
 
@@ -104,18 +105,6 @@ class Register extends Component {
                 return false;
             }
             $('#niname_val').removeClass('border_validate_err');
-    
-            // if(this.phone1_val_checker ==='' || this.phone2_val_checker ===''
-            // || this.phone3_val_checker ==='') {
-            //     $('#phone1_val').addClass('border_validate_err');
-            //     $('#phone2_val').addClass('border_validate_err');
-            //     $('#phone3_val').addClass('border_validate_err');
-            //     this.sweetalert('휴대전화 번호를 입력해주세요.', '', 'info', '닫기')
-            //     return false;
-            // }
-            // $('#phone1_val').removeClass('border_validate_err');
-            // $('#phone2_val').removeClass('border_validate_err');
-            // $('#phone3_val').removeClass('border_validate_err');
              return true;
         }
 
@@ -143,28 +132,6 @@ class Register extends Component {
             .catch( response => { return false; } );
         }
 
-
-        // if(this.fnValidate()){
-        //     this.state.niname = this.niname_val_checker
-        //     axios.post('/api/member/ninameCk', {
-        //         niname: this.niname_val_checker
-        //     })
-        //     .then( response => {
-        //         try {
-        //             const dupli_count = response.data;
-        //             if(dupli_count !== 0){
-        //                 $('#niname_val').addClass('border_validate_err');
-        //                 this.sweetalert('이미 존재하는 닉네임입니다.', '', 'info', '닫기')
-        //             }else{
-        //                 $('#niname_val').removeClass('border_validate_err');
-        //                 this.fnSignInsert('signup', e)
-        //             }
-        //         } catch (error) {
-        //             this.sweetalert('작업중 오류가 발생하였습니다.', error, 'error', '닫기')
-        //         }
-        //     })
-        //     .catch( response => { return false; } );
-        // }
 
         this.fnSignInsert = async (type, e) => {
             var jsonstr = $("form[name='frm']").serialize();
