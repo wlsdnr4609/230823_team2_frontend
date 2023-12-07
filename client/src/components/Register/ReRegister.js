@@ -13,7 +13,7 @@ class ReRegister extends Component {
             before_swtcode: props.match.params.mid,
 
             selectedFile: null,
-            email2: '',   //로그인한 이메일
+            email: '',   //로그인한 이메일
             name: '',
             niname: '',
             mid: '',
@@ -26,7 +26,7 @@ class ReRegister extends Component {
         var cookie_userid = cookie.load('email')
         var cookie_userpw = cookie.load('pw')
         this.setState({ niname: cookie_usernm })
-        this.setState({ email2: cookie_userid })
+        this.setState({ email: cookie_userid })
         this.setState({ pw: cookie_userpw })
 
         this. callSwToolInfoApi()
@@ -37,7 +37,7 @@ class ReRegister extends Component {
     callSwToolInfoApi = async () => {
         //alert("this.state.before_swtcode=" + this.state.before_swtcode);
         axios.post('/api/member/readMember', {
-            email: this.state.email2,
+            email: this.state.email,
         })
             .then(response => {
                 try {
@@ -313,7 +313,7 @@ class ReRegister extends Component {
                 .then(response => {
                 }).catch(error => { alert('5. 작업중 오류가 발생하였습니다.'); return false; });
         }.bind(this))
-
+alert( "email: "+this.state.email)
     }
 
 
@@ -368,7 +368,7 @@ class ReRegister extends Component {
                                             <tr className="re_email">
                                                 <th>이메일</th>
                                                 <td>
-                                                    <div name="email" id="email_val" class="">{this.state.email2}</div>
+                                                    <div name="email" id="email_val" class="">{this.state.email}</div>
                                                 </td>
                                             </tr>
                                             <tr>

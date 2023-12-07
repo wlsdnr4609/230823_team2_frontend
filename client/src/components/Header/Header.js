@@ -52,8 +52,8 @@ class Header extends Component {
 
     callSessionInfoApi = (type) => {
         axios.post('/api/member/loginPost', {
-            token1 : cookie.load('email') 
-            , token2 : cookie.load('niname') 
+            token1 : cookie.load('email'),
+            token2 : cookie.load('niname') 
         })
         .then( response => {
             this.setState({niname : response.data.niname})

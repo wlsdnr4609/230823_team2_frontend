@@ -29,7 +29,7 @@ class ContentView extends Component {
     componentDidMount() {
         var cookie_usernm = cookie.load('niname')
         this.setState({ niname2: cookie_usernm })  //niname2=로그인한 사람
-        alert("niname2: "+cookie_usernm);
+        //alert("niname2: "+cookie_usernm);
         
        
         this.callSwToolInfoApi();
@@ -225,7 +225,7 @@ class ContentView extends Component {
                 })
                 .catch(error => { alert('2. 작업중 오류가 발생하였습니다.'); return false; });
 
-
+                alert(this.state.before_swtcode);
         // axios.get('/api/replies/all/{this.state.before_swtcode}', {  //arc에서 succ. post방식 확인하기
         // })
 

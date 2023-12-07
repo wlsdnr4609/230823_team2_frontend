@@ -18,10 +18,10 @@ class QBoardList extends Component {
     componentDidMount() {
         var cookie_usernm = cookie.load('niname')
         this.setState({ niname: cookie_usernm })
-
+        alert("niname: "+this.state.niname)
         this. callSwToolListApi()
         
-alert("niname: "+this.state.niname)
+
 
     }
 
@@ -39,19 +39,6 @@ alert("niname: "+this.state.niname)
                     }
                 })
                 .catch(error => { alert('2. 작업중 오류가 발생하였습니다.'); return false; });
-
-
-        // axios.get('/api/list?btype=Q', {
-        // })
-        //     .then(response => {
-        //         try {
-        //             this.setState({ responseSwtoolList: response });
-        //             this.setState({ append_SwtoolList: this.SwToolListAppend() });
-        //         } catch (error) {
-        //             alert('1. 작업중 오류가 발생하였습니다.');
-        //         }
-        //     })
-        //     .catch(error => { alert('2. 작업중 오류가 발생하였습니다.'); return false; });
     }
 
     SwToolListAppend = () => {
