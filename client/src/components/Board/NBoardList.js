@@ -1,84 +1,121 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import axios from "axios";
+import axios from 'axios';
 
 class NBoardList extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            responseSwtoolList: '',
-            append_SwtoolList: '',
-        }
+            responseSwtoolList: [],
+            currentPage: 1,
+            totalPage: 1,
+            itemsPerPage: 10,
+        };
     }
+
     componentDidMount() {
-        this.callSwToolListApi()
+        this.callSwToolListApi();
     }
 
-    callSwToolListApi = async () => {
-        axios.get('/api/list?btype=N', {
-        })
-            .then(response => {
-                try {
-                    this.setState({ responseSwtoolList: response });
-                    this.setState({ append_SwtoolList: this.SwToolListAppend() });
-                } catch (error) {
-                    alert('작업중 오류가 발생하였습니다.');
-                }
-            })
-            .catch(error => { alert('작업중 오류가 발생하였습니다.'); return false; });
-    }
+    callSwToolListApi = async (page = 1) => {
+        try {
+            const response = await axios.get(`/api/list?btype=N&page=${page}&perPageNum=10`);
+            const totalCount = response.headers['x-total-count'];
+            this.setState({ totalPage: Math.ceil(totalCount / 10) });
 
-    SwToolListAppend = () => {
-        let result = []
-        var SwToolList = this.state.responseSwtoolList.data
+            this.setState({
+                responseSwtoolList: response.data,
+                currentPage: page,
+                totalCount: totalCount,
 
-        for (let i = 0; i < SwToolList.length; i++) {
-            var data = SwToolList[i]
-
-            result.push(
-                <tr>
-                    <td>{data.bid}</td>
-                    <td>
-                        <Link to={'ContentView/' + data.bid}>{data.title}</Link></td>
-                    <td>{data.niname}</td>
-                    <td>{data.counts}</td>
-                    <td>{data.regdate}</td>
-                </tr>
-            )
+            });
+        } catch (error) {
+            alert('작업중 오류가 발생하였습니다.');
         }
-        return result
-    }
+    };
+    handlePageChange = (pageNumber) => {
+        this.callSwToolListApi(pageNumber);
+    };
+
+    renderTableRows = () => {
+        const { responseSwtoolList, itemsPerPage } = this.state;
+
+        // 현재 페이지에 해당하는 데이터만 추출
+        const startIndex = (this.state.currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const currentPageData = responseSwtoolList.slice(startIndex, endIndex);
+
+        return currentPageData.map((data) => (
+            <tr key={data.bid}>
+                <td>{data.bid}</td>
+                <td>
+                    <Link to={`ContentView/${data.bid}`}>{data.title}</Link>
+                </td>
+                <td>{data.niname}</td>
+                <td>{data.counts}</td>
+                <td>{data.regdate}</td>
+            </tr>
+        ));
+    };
+
 
     render() {
+        const { currentPage, totalPage } = this.state;
+        const pageNumbers = Array.from({ length: totalPage }, (_, i) => i + 1);
+
         return (
-            <section class="sub_wrap" >
-                <article class="s_cnt mp_pro_li ct1 mp_pro_li_admin">
-                    <div class="li_top">
-                        <h2 class="s_tit1">공지사항</h2>
-                        <div class="li_top_sch af">
-                            <td class="fileBox fileBox_w1">
-                                <label for="uploadBtn1" class="btn_s">검색</label>
-                                <input type="text" id="manualfile" class="fileName fileName1"  />
-                            </td>
-                            <Link to={'/NBoardView/'} className="sch_bt2 wi_au"> 글쓰기</Link>
+            <section className="sub_wrap">
+                <article className="s_cnt mp_pro_li ct1 mp_pro_li_admin">
+                    <div className="li_top">
+                        <h2 className="s_tit1">공지사항</h2>
+                        <div className="li_top_sch af">
+                            <div className="fileBox fileBox_w1">
+                                <label htmlFor="uploadBtn1" className="btn_s">
+                                    검색
+                                </label>
+                                <input type="text" id="manualfile" className="fileName fileName1" />
+                            </div>
+                            <Link to="/NBoardView/" className="sch_bt2 wi_au">
+                                글쓰기
+                            </Link>
                         </div>
                     </div>
 
-                    <div class="list_cont list_cont_admin">
-                        <table class="table_ty1 ad_tlist">
-                            <tr>
-                                <th>글번호</th>
-                                <th>제목</th>
-                                <th>작성자</th>
-                                <th>조회수</th>
-                                <th>작성일</th>
+                    <div className="list_cont list_cont_admin">
+                        <table className="table_ty1 ad_tlist">
+                            <thead>
+                                <tr>
+                                    <th>글번호</th>
+                                    <th>제목</th>
+                                    <th>작성자</th>
+                                    <th>조회수</th>
+                                    <th>작성일</th>
+                                </tr>
+                            </thead>
+                        </table>
 
-                            </tr>
+                        <table className="table_ty2 ad_tlist">
+                            <tbody>{this.renderTableRows()}</tbody>
                         </table>
-                        <table class="table_ty2 ad_tlist">
-                            {this.state.append_SwtoolList}
-                        </table>
+
+                        <div className="pagination">
+                            <button onClick={() => this.handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+                                이전
+                            </button>
+                            {pageNumbers.map((number) => (
+                                <button
+                                    key={number}
+                                    onClick={() => this.handlePageChange(number)}
+                                    className={currentPage === number ? 'active' : ''}
+                                >
+                                    {number}
+                                </button>
+                            ))}
+                            <button onClick={() => this.handlePageChange(currentPage + 1)} disabled={currentPage === totalPage}>
+                                다음
+                            </button>
+                        </div>
                     </div>
                 </article>
             </section>
