@@ -16,27 +16,42 @@ class QBoardList extends Component {
         }
     }
     componentDidMount() {
-        var cookie_usernm = cookie.load('niname');
-        this.setState({ niname: cookie_usernm });
+        var cookie_usernm = cookie.load('niname')
+        this.setState({ niname: cookie_usernm })
 
-        this.callSwToolListApi()
-        // this.setState({ niname: data.niname });
-
+        this. callSwToolListApi()
+        
+alert("niname: "+this.state.niname)
 
     }
 
     callSwToolListApi = async () => {
-        axios.get('/api/list?btype=Q', {
+
+        axios.post('/api/qlist', {
+            niname: this.state.niname,
         })
-            .then(response => {
-                try {
-                    this.setState({ responseSwtoolList: response });
-                    this.setState({ append_SwtoolList: this.SwToolListAppend() });
-                } catch (error) {
-                    alert('1. 작업중 오류가 발생하였습니다.');
-                }
-            })
-            .catch(error => { alert('2. 작업중 오류가 발생하였습니다.'); return false; });
+        .then(response => {
+                    try {
+                        this.setState({ responseSwtoolList: response });
+                        this.setState({ append_SwtoolList: this.SwToolListAppend() });
+                    } catch (error) {
+                        alert('1. 작업중 오류가 발생하였습니다.');
+                    }
+                })
+                .catch(error => { alert('2. 작업중 오류가 발생하였습니다.'); return false; });
+
+
+        // axios.get('/api/list?btype=Q', {
+        // })
+        //     .then(response => {
+        //         try {
+        //             this.setState({ responseSwtoolList: response });
+        //             this.setState({ append_SwtoolList: this.SwToolListAppend() });
+        //         } catch (error) {
+        //             alert('1. 작업중 오류가 발생하였습니다.');
+        //         }
+        //     })
+        //     .catch(error => { alert('2. 작업중 오류가 발생하였습니다.'); return false; });
     }
 
     SwToolListAppend = () => {
@@ -68,8 +83,8 @@ class QBoardList extends Component {
                         <h2 class="s_tit1">문의</h2>
                         <div class="li_top_sch af">
                             <td class="fileBox fileBox_w1">
-                                <label for="uploadBtn1" class="btn_s">검색</label>
-                                <input type="text" id="manualfile" class="fileName fileName1" />
+                            <input type="text" id="manualfile" class="fileName fileName1" />
+                                <label for="uploadBtn1" class="btn_file">검색</label>
                             </td>
                             <Link to={'/NBoardView/'} className="sch_bt2 wi_au"> 글쓰기</Link>
                         </div>

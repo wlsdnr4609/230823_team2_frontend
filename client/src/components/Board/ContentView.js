@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import axios from "axios";
 import $, { data } from 'jquery';
 import Swal from 'sweetalert2';
@@ -8,96 +8,97 @@ import cookie from 'react-cookies';
 class ContentView extends Component {
     constructor(props) {
         super(props);
-        this.state = {            
+        this.state = {
             before_swtcode: props.match.params.bid,
-            selectedFile: null,  
+            selectedFile: null,
             likeCnt: '',
             likes: '',
             reply: '',
-            replies: [], 
+            replies: [],
             title: '',
-            cont: '', 
+            cont: '',
             niname: '',  //글작성자
-            regdate: '', 
+            regdate: '',
             niname2: '', //로그인한 닉네임
             bid: '',
             responseRepliesList: '',
             append_RepliesList: '',
-        } 
+        }
+        //alert(this.state.before_swtcode )
     }
-    componentDidMount () {
+    componentDidMount() {
         var cookie_usernm = cookie.load('niname')
         this.setState({ niname2: cookie_usernm })  //niname2=로그인한 사람
-
+        alert("niname2: "+cookie_usernm);
+        
+       
         this.callSwToolInfoApi();
-        // if(this.state.niname !== this.state.niname2){
-        //     $('.modifyclass').hide()
-        //     $('.deleteclass').hide()
-        // }else{
-        //      this.callSwToolInfoApi()
-        //     $('.saveclass').hide()
-        // }
+        if (this.state.niname !== this.state.niname2) {
+            $('.modifyclass').hide()
+            $('.deleteclass').hide()
+        }
         
     }
-    
 
-   
+
 
     callSwToolInfoApi = async () => {
         //alert("this.state.before_swtcode="+this.state.before_swtcode);
         axios.post('/api/read', {
             bid: this.state.before_swtcode,
         })
-        .then( response => {            
-            try {
-                var data = response.data
-                
-                this.setState({title: data.title})
-                this.setState({cont: data.cont})
-                this.setState({niname: data.niname})
-                this.setState({likes: data.likes})
-                this.setState({regdate: data.regdate})
-                $('#is_niname').val(data.niname)
-                $('#is_cont').val(data.cont)
-                $('#is_title').val(data.title)
-                $('#is_like').val(data.likes)
-                
-                
-                // var manualName = data.swt_manual_path.replace('/swmanual/','')
-                // var fileName = data.swt_big_imgpath.replace('/image/','')
-                // var fileName2 = data.swt_imagepath.replace('/image/','')
-                // $('#upload_img').prepend('<img id="uploadimg" src="'+data.swt_big_imgpath+'"/>')
-                // // $('#upload_img2').prepend('<img id="uploadimg2" src="'+data.swt_imagepath+'"/>')
+            .then(response => {
+                try {
+                    var data = response.data
 
-                // $('#imagefile').val(fileName)
-                // // $('#imagefile2').val(fileName2)
-                // $('#manualfile').val(manualName)
+                    this.setState({ title: data.title })
+                    this.setState({ cont: data.cont })
+                    this.setState({ niname: data.niname })
+                    this.setState({ likes: data.likes })
+                    this.setState({ regdate: data.regdate })
+                    $('#is_niname').val(data.niname)
+                    $('#is_cont').val(data.cont)
+                    $('#is_title').val(data.title)
+                    $('#is_like').val(data.likes)
 
-                // if($('#uploadimg').attr('src').indexOf("null") > -1){
-                //     $('#uploadimg').hide()
-                // }
-                // if($('#uploadimg2').attr('src').indexOf("null") > -1){
-                //     $('#uploadimg2').hide()
-                // }                              
-            } 
-            catch (error) {
-                alert('3. 작업중 오류가 발생하였습니다.')
-            }
-        })
-        .catch( error => {alert('4. 작업중 오류가 발생하였습니다.');return false;} );
+                    //alert(data.niname)
+                    // var manualName = data.swt_manual_path.replace('/swmanual/','')
+                    // var fileName = data.swt_big_imgpath.replace('/image/','')
+                    // var fileName2 = data.swt_imagepath.replace('/image/','')
+                    // $('#upload_img').prepend('<img id="uploadimg" src="'+data.swt_big_imgpath+'"/>')
+                    // // $('#upload_img2').prepend('<img id="uploadimg2" src="'+data.swt_imagepath+'"/>')
+
+                    // $('#imagefile').val(fileName)
+                    // // $('#imagefile2').val(fileName2)
+                    // $('#manualfile').val(manualName)
+
+                    // if($('#uploadimg').attr('src').indexOf("null") > -1){
+                    //     $('#uploadimg').hide()
+                    // }
+                    // if($('#uploadimg2').attr('src').indexOf("null") > -1){
+                    //     $('#uploadimg2').hide()
+                    // }                              
+                }
+                catch (error) {
+                    alert('3. 작업중 오류가 발생하였습니다.')
+                }
+            })
+            .catch(error => { alert('4. 작업중 오류가 발생하였습니다.'); return false; });
+
+           
     }
-    
+
     deleteSwtool = (e) => {
         var event_target = e.target
-        this.sweetalertDelete('정말 삭제하시겠습니까?', function() {
+        this.sweetalertDelete('정말 삭제하시겠습니까?', function () {
             axios.post('/api/remove', {
                 bid: this.state.before_swtcode,
             })
-            .then( response => {                
-            }).catch( error => {alert('5. 작업중 오류가 발생하였습니다.');return false;} );
+                .then(response => {
+                }).catch(error => { alert('5. 작업중 오류가 발생하였습니다.'); return false; });
         }.bind(this))
-        
-    } 
+
+    }
 
     sweetalertDelete = (title, callbackFunc) => {
         Swal.fire({
@@ -108,22 +109,22 @@ class ContentView extends Component {
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Yes'
-          }).then((result) => {
+        }).then((result) => {
             if (result.value) {
-              Swal.fire(
-                'Deleted!',
-                '삭제되었습니다.',
-                'success'
-              )
-              setTimeout(function() {
-                this.props.history.push('/NBoardList');
-                }.bind(this),1500
-            );
-            }else{
+                Swal.fire(
+                    'Deleted!',
+                    '삭제되었습니다.',
+                    'success'
+                )
+                setTimeout(function () {
+                    this.props.history.push('/NBoardList');
+                }.bind(this), 1500
+                );
+            } else {
                 return false;
             }
             callbackFunc()
-          })
+        })
     }
 
     // regeistComent = (e) => {
@@ -149,12 +150,12 @@ class ContentView extends Component {
     // };
 
 
-   
+
     submitClick = async (type, e) => {
         this.replies_val_checker = $('#is_replies').val();
 
         this.fnValidate = (e) => {
-            if(this.replies_val_checker === '') {
+            if (this.replies_val_checker === '') {
                 $('#is_replies').addClass('border_validate_err');
                 alert('댓글을 다시 확인해주세요.')
                 return false;
@@ -164,44 +165,88 @@ class ContentView extends Component {
             return true;
         }
 
-        if(this.fnValidate()){
-            var jsonstr = $("form[name='frm']").serialize();
+        if (this.fnValidate()) {
+            var jsonstr = $("form[name='replytext']").serialize();
             jsonstr = decodeURIComponent(jsonstr);
-            var Json_form = JSON.stringify(jsonstr).replace(/\"/gi,'')
-            Json_form = "{\"" +Json_form.replace(/\&/g,'\",\"').replace(/=/gi,'\":"')+"\"}";
+            var Json_form = JSON.stringify(jsonstr).replace(/\"/gi, '')
+            Json_form = "{\"" + Json_form.replace(/\&/g, '\",\"').replace(/=/gi, '\":"') + "\"}";
             alert(Json_form);
 
-            var Json_data = JSON.parse(Json_form);
+            //var Json_data = JSON.parse(Json_form);
 
-            axios.post('/api/replies', Json_data)
-                .then(response => {
+            // axios.post('/api/replies', Json_data)
+            axios.post('/api/replies', Json_form, {   
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+
+
+                // .then(response => {
+                //     try {
+                //         if (response.data == "succ") {
+                //             if (type == 'save') {
+                //                 this.sweetalertSucc('등록되었습니다.', false)
+                //             }
+                //             setTimeout(function () {
+                //                 this.props.history.push('/ContentView');
+                //             }.bind(this), 1500
+                //             );
+                //         }
+                //     }
+                //     catch (error) {
+                //         alert('1. 작업중 오류가 발생하였습니다.')
+                //     }
+                // })
+                // .catch(error => { alert('2. 작업중 오류가 발생하였습니다.'); return false; });
+                this.callrepliesInfoApi();
+        }
+    }
+
+
+
+   
+
+
+
+    callrepliesInfoApi = async () => {
+
+
+        axios.post('/api/replies/all', {
+            bid: this.state.before_swtcode,
+        })
+        .then(response => {
                     try {
-                        if (response.data == "succ") {
-                            if (type == 'save') {
-                                this.sweetalertSucc('등록되었습니다.', false)
-                            }
-                            setTimeout(function () {
-                                this.props.history.push('/NBoardList');
-                            }.bind(this), 1500
-                            );
-                        }
-                    }
-                    catch (error) {
-                        alert('1. 작업중 오류가 발생하였습니다.')
+                        this.setState({ responseRepliesList: response });
+                        this.setState({ append_RepliesList: this.RepliesListAppend() });
+                    } catch (error) {
+                        alert('1. 작업중 오류가 발생하였습니다.');
                     }
                 })
                 .catch(error => { alert('2. 작업중 오류가 발생하였습니다.'); return false; });
-                
-            }
-    }
 
+
+        // axios.get('/api/replies/all/{this.state.before_swtcode}', {  //arc에서 succ. post방식 확인하기
+        // })
+
+        //     .then(response => {
+        //         try {
+        //             this.setState({ responseRepliesList: response });
+        //             this.setState({ append_RepliesList: this.RepliesListAppend() });
+        //         } catch (error) {
+        //             alert('작업중 오류가 발생하였습니다.');
+        //         }
+        //     })
+        //     .catch(error => { alert('작업중 오류가 발생하였습니다.'); return false; });
+        // alert(this.state.append_RepliesList);
+    }
 
 
     RepliesListAppend = () => {
         let result = []
         var RepliesList = this.state.responseRepliesList.data
-        
-        for(let i=0; i<RepliesList.length; i++){
+
+        for (let i = 0; i < RepliesList.length; i++) {
             var data = RepliesList[i]
 
             result.push(
@@ -215,40 +260,24 @@ class ContentView extends Component {
 
 
 
-    callrepliesInfoApi = async () => {
-        axios.get('/api/replies/all/{this.state.before_swtcode}', {
-        })
-        
-        .then( response => {
-            try {
-                this.setState({ responseRepliesList: response });
-                this.setState({ append_RepliesList: this.RepliesListAppend() });
-            } catch (error) {
-                alert('작업중 오류가 발생하였습니다.');
-            }
-        })
-        .catch( error => {alert('작업중 오류가 발생하였습니다.');return false;} );
-        alert(this.state.append_RepliesList);
-    }
-
-   
-
-    likeSwtool = () => {
+    likeSwtool = async (type, e) => {
         //this.setState({ like: this.state.like + 1 });
-        var likeCnt = this.state.likes + 1; 
-        alert("this.state.likes="+likeCnt);
+        // this.setState({ likeCnt: this.state.likes + 1 });
+        var likeCnt = this.state.likes + 1;
+        alert("this.state.likes=" + this.state.likes + 1);
         axios.post('/api/likes', {
             bid: this.state.before_swtcode,
             likes: likeCnt
         })
+        this.callSwToolInfoApi();
     }
 
-    
 
 
 
-    render () {
-        
+
+    render() {
+
         return (
             <section class="sub_wrap">
                 <article class="s_cnt mp_pro_li ct1">
@@ -260,9 +289,9 @@ class ContentView extends Component {
                             <input id="is_Swtcode" type="hidden" name="is_Swtcode" />
                             <input id="is_Email" type="hidden" name="is_Email" value="guest" />
                             <input id="is_beforeSwtcode" type="hidden" name="bid" value={this.state.before_swtcode} />
-                            <input id="is_replyer" type="hidden" name="replyer" value={this.state.niname2}/>
+
                             <article class="res_w">
-                                
+
                                 <div class="tb_outline">
                                     <table class="table_ty1">
                                         <tr>
@@ -271,7 +300,7 @@ class ContentView extends Component {
                                             </th>
                                             <td>
                                                 {/* <div  name="niname" id="is_Swt_toolname" class="">{this.state.niname}</div> */}
-                                                <input type="text"  id="is_niname" name="niname" class="" value={this.state.niname} readonly="readonly"/>
+                                                <input type="text" id="is_niname" name="niname" class="" value={this.state.niname} readonly="readonly" />
                                             </td>
                                         </tr>
                                         <tr>
@@ -279,7 +308,7 @@ class ContentView extends Component {
                                                 <label for="is_regdate">작성일<span class="red"></span></label>
                                             </th>
                                             <td>
-                                                <input type="text"  name="regdate" id="is_regdate" class="" value={this.state.regdate} readonly="readonly"/>
+                                                <input type="text" name="regdate" id="is_regdate" class="" value={this.state.regdate} readonly="readonly" />
                                             </td>
                                         </tr>
                                         <tr>
@@ -287,16 +316,16 @@ class ContentView extends Component {
                                                 <label for="is_title">제목<span class="red"></span></label>
                                             </th>
                                             <td>
-                                                <input type="text"  name="title" id="is_title" class="" value={this.state.title} readonly="readonly"/>
+                                                <input type="text" name="title" id="is_title" class="" value={this.state.title} readonly="readonly" />
                                             </td>
                                         </tr>
-                                        
+
                                         <tr>
                                             <th>
                                                 <label for="is_cont">내용<span class="red"></span></label>
                                             </th>
                                             <td>
-                                                <textarea name="cont" id="is_Comments" rows="" cols=""value={this.state.cont} readonly="readonly"></textarea>
+                                                <textarea name="cont" id="is_Comments" rows="" cols="" value={this.state.cont} readonly="readonly"></textarea>
                                             </td>
                                         </tr>
                                         <tr>
@@ -306,8 +335,8 @@ class ContentView extends Component {
                                             <td>
                                                 {/* <img src={require("../../img/layout/carlogo001.png")} height="30px" width="30px" alt=""/> */}
                                                 <div name="likes" id="is_like" >
-                                                    <span onClick={(e) => this.likeSwtool('like', e)}>❤️</span>
-                                                    { this.state.likes }
+                                                    <span onClick={(e) => this.likeSwtool('likes', e)}>❤️</span>
+                                                    {this.state.likes}
                                                 </div>
                                             </td>
                                         </tr>
@@ -325,30 +354,33 @@ class ContentView extends Component {
                                                 <label for="is_replies">댓글</label>
                                             </th>
                                             <td>
-                                            
-                                                <input type="text" name="replytext" id="is_replies" class="" 
-                                                    // onChange={this.regeistComent}
-                                                    // onKeyPress={this.pressEnter}
+                                                <form name="replytext" >
+                                                    <input id="is_beforeSwtcode" type="hidden" name="bid" value={this.state.before_swtcode} />
+                                                    <input id="is_replyer" type="hidden" name="replyer" value={this.state.niname2} />
+                                                    <input type="text" name="replytext" id="is_replies" class=""
+                                                        onChange={this.regeistComent}
+                                                        onKeyPress={this.pressEnter}
                                                     // value={this.state.reply}
-                                                />
-                                                <button className="btn_replies" onClick={(e) => this.submitClick('save', e)}>등록</button>
-                                                {/* <button className="upload" onClick={this.PressClick}>등록</button> */}
+                                                    />
+                                                    <button className="btn_replies" onClick={(e) => this.submitClick('save', e)}>등록</button>
+                                                    {/* <button className="upload" onClick={this.PressClick}>등록</button> */}
+                                                </form>
                                             </td>
                                         </tr>
-                                       
-                                       
+
+
                                     </table>
-                                    <div class="btn_confirm mt20" style={{"margin-bottom": "44px"}}>
+                                    <div class="btn_confirm mt20" style={{ "margin-bottom": "44px" }}>
                                         <Link to={'/NBoardList'} className="bt_ty bt_ty1 cancel_ty1">목록보기</Link>
                                         <Link to={'/ContentView2/' + this.state.before_swtcode} className="bt_ty bt_ty2 submit_ty1 modifyclass">수정</Link>
                                         <a href="javascript:" className="bt_ty bt_ty2 submit_ty1 deleteclass" id={this.state.before_swtcode}
-                                        onClick={(e) => this.deleteSwtool('delete', e)}>삭제</a>
+                                            onClick={(e) => this.deleteSwtool('delete', e)}>삭제</a>
                                     </div>
-                                   
+
                                 </div>
                             </article>
-                        </form>	
-                    </div> 
+                        </form>
+                    </div>
                 </article>
             </section>
         );

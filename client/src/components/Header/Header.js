@@ -28,7 +28,7 @@ class Header extends Component {
         var cookie_password = cookie.load('pw')
 
         this.setState({niname : cookie_usernm})
-        
+        //alert("5. niname: "+cookie_usernm);
         
         if(cookie_userid != undefined){
             const expires = new Date()

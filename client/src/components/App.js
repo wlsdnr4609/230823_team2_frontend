@@ -31,7 +31,7 @@ import RBoardList from './Board/RBoardList';
 import RBoardView from './Board/RBoardView';
 import ContentView from './Board/ContentView';
 import ContentView_ex from './Board/ContentView_ex';
-import View from './Board/View';
+// import Write from './Board/Write';
 
 import ContentView2 from './Board/ContentView2';
 import SoftwareList from './SoftwareToolsManage/SoftwareList';
@@ -144,7 +144,7 @@ class App extends Component {
         <Route path='/RBoardView/:bid' component={RBoardView} />
         <Route path='/ContentView/:bid' component={ContentView} />
         <Route path='/ContentView_ex/:bid' component={ContentView_ex} />
-        <Route path='/View/:bid' component={View} />
+        {/* <Route path='/Write/' component={Write} /> */}
 
         <Route path='/ContentView2/:bid' component={ContentView2} />
         <Route path='/SoftwareList' component={SoftwareList} />

@@ -227,22 +227,11 @@ class Register extends Component {
                                 <div className="re1_wrap">
                                     <div className="re_cnt ct2">
                                         <table className="table_ty1">
-                                            <tr className="re_email">
+                                            <tr>
                                                 <th>이메일</th>
                                                 <td>
                                                     <input id="email_val" type="text" name="email"
                                                         placeholder="이메일을 입력해주세요." onKeyPress={this.emailKeyPress} />
-                                                    {/* <span className="e_goll">@</span>
-                                                    <select id="email2_val" name="email2" className="select_ty1">
-                                                            <option value="">선택하세요</option>
-                                                            <option value='naver.com'>naver.com</option>
-                                                            <option value='hanmail.net'>hanmail.net</option>
-                                                            <option value='nate.com'>nate.com</option>
-                                                            <option value='hotmail.com'>hotmail.com</option>
-                                                            <option value='gmail.com'>gmail.com</option>
-                                                            <option value='yahoo.co.kr'>yahoo.co.kr</option>
-                                                            <option value='yahoo.com'>yahoo.com</option>
-                                                    </select> */}
                                                 </td>
                                             </tr>
                                             <tr>

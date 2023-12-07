@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from "axios";
+import $ from 'jquery';
 
 class NBoardList extends Component {
     constructor(props) {
@@ -9,6 +10,9 @@ class NBoardList extends Component {
         this.state = {
             responseSwtoolList: '',
             append_SwtoolList: '',
+            responseQList: '',
+            append_QList: '',
+            selected: null,
         }
     }
     componentDidMount() {
@@ -50,6 +54,51 @@ class NBoardList extends Component {
         return result
     }
 
+//api주소 확인해서 변경
+    submitClick = async (type, e) => {
+        this.fileSc = $('#manualfile').val();
+
+        axios.post('/api/qlist', {
+            email: this.fileSc
+        })
+        .then(response => {
+            try {
+                this.setState({ responseQList: response });
+                this.setState({ append_QList: this.QListAppend() });
+            } catch (error) {
+                alert('작업중 오류가 발생하였습니다.');
+            }
+        })
+        .catch(error => { alert('작업중 오류가 발생하였습니다.'); return false; });
+
+    }
+
+
+
+    handleFileInput(type, e){
+        if(type ==='file'){
+            $('#imagefile').val(e.target.files[0].name)
+        }else if(type ==='file2'){
+            $('#imagefile2').val(e.target.files[0].name)
+        }else if(type ==='manual'){
+            $('#manualfile').val(e.target.files[0].name)
+        }
+        this.setState({
+          selected : e.target.files[0],
+        })
+        setTimeout(function() {
+            if(type ==='manual'){
+                this.handlePostMenual()
+            }else{
+                this.handlePostImage(type)
+            }
+        }.bind(this),1
+        );
+    }
+
+
+
+
     render() {
         return (
             <section class="sub_wrap" >
@@ -58,8 +107,15 @@ class NBoardList extends Component {
                         <h2 class="s_tit1">공지사항</h2>
                         <div class="li_top_sch af">
                             <td class="fileBox fileBox_w1">
-                                <label for="uploadBtn1" class="btn_s">검색</label>
-                                <input type="text" id="manualfile" class="fileName fileName1"  />
+                                <select id="manualfile" name="email2" className="btn_file">
+                                    <option value=""> 선택 </option>
+                                    <option value='title'>제목</option>
+                                    <option value='niname'>작성자</option>
+                                </select>
+                                <input type="text" id="manualfile" class="fileName fileName1" />
+                                <label for="uploadBtn1" class="btn_file">검색</label>
+                                <input type="file" id="imageSelect" className="uploadBtn uploadBtn1"
+                                                onChange={e => this.handleFileInput('file',e)}/>
                             </td>
                             <Link to={'/NBoardView/'} className="sch_bt2 wi_au"> 글쓰기</Link>
                         </div>

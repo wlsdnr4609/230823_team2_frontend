@@ -58,8 +58,13 @@ class FBoardList extends Component {
                         <h2 class="s_tit1">자유게시판</h2>
                         <div class="li_top_sch af">
                             <td class="fileBox fileBox_w1">
-                                <label for="uploadBtn1" class="btn_s">검색</label>
+                            <select id="manualfile" name="email2" className="btn_file">
+                                    <option value=""> 선택 </option>
+                                    <option value='title'>제목</option>
+                                    <option value='niname'>작성자</option>
+                                </select>
                                 <input type="text" id="manualfile" class="fileName fileName1" />
+                                <label for="uploadBtn1" class="btn_file">검색</label>
                             </td>
                             <Link to={'/NBoardView/'} className="sch_bt2 wi_au"> 글쓰기</Link>
                         </div>
