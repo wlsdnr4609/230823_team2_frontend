@@ -51,7 +51,7 @@ class FBoardList extends Component {
                 <tr key={data.bid}>
                     <td>{data.bid}</td>
                     <td>
-                        <Link to={'ContentView/' + data.bid}>{data.title}</Link></td>
+                        <Link to={'FContentView/' + data.bid}>{data.title}</Link></td>
                     <td>{data.niname}</td>
                     <td>{data.counts}</td>
                     <td>{this.formatDate(data.regdate)}</td>
@@ -77,7 +77,7 @@ class FBoardList extends Component {
                                 <input type="text" id="manualfile" class="fileName fileName1" />
                                 <label for="uploadBtn1" class="btn_file">검색</label>
                             </td>
-                            <Link to={'/NBoardView/'} className="sch_bt2 wi_au"> 글쓰기</Link>
+                            <Link to={'/FBoardView/'} className="sch_bt2 wi_au"> 글쓰기</Link>
                         </div>
                     </div>
 
