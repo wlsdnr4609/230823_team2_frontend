@@ -6,7 +6,6 @@ import $ from 'jquery';
 import Swal from 'sweetalert2';
 
 
-
 class Header extends Component {
     constructor(props) {
         super(props);
@@ -19,16 +18,13 @@ class Header extends Component {
         if(window.location.pathname.indexOf('/login') != -1){
             $('.menulist').hide()
             $('.hd_top').hide()
+            // $('.logo').hide()
         }
-        
-
 
         var cookie_userid = cookie.load('email')
         var cookie_usernm = cookie.load('niname')
         var cookie_password = cookie.load('pw')
-
         this.setState({niname : cookie_usernm})
-        //alert("5. niname: "+cookie_usernm);
         
         if(cookie_userid != undefined){
             const expires = new Date()
@@ -47,7 +43,6 @@ class Header extends Component {
             $('.menulist').hide()
             $('.hd_top').hide()
         }
-        //this.callSessionInfoApi()
     }
 
     callSessionInfoApi = (type) => {
@@ -79,9 +74,6 @@ class Header extends Component {
     myInfoLeave () {
         $(".hd_left > li > .box1").stop().fadeOut(400);
     }
-    
-
-
 
     logout = async e => {
         cookie.remove('email', { path: '/'});
@@ -116,7 +108,7 @@ class Header extends Component {
             </div>
                 <div className="h_nav ct1 af">
                     <div className="logo">
-                        <Link to={'/Mainform'}><img src={require("../../img/layout/carlogo001.png")} height="65px" width="200px" alt=""/></Link>
+                        <Link to={'/Mainform2'}><img src={require("../../img/layout/carlogo001.png")} height="65px" width="200px" alt=""/></Link>
                     </div>
                     <nav className="gnb gnb_admin">
                     <ul className="af">

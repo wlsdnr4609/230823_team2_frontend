@@ -29,6 +29,17 @@ class FBoardList extends Component {
             .catch(error => { alert('작업중 오류가 발생하였습니다.'); return false; });
     }
 
+    formatDate = (timestamp) => {
+        const date = new Date(timestamp);
+        const year = date.getFullYear().toString().slice(2); 
+        const month = ('0' + (date.getMonth() + 1)).slice(-2); 
+        const day = ('0' + date.getDate()).slice(-2); 
+        const hours = ('0' + date.getHours()).slice(-2); 
+        const minutes = ('0' + date.getMinutes()).slice(-2); 
+      
+        return `${year}/${month}/${day} ${hours}:${minutes}`;
+    };
+
     SwToolListAppend = () => {
         let result = []
         var SwToolList = this.state.responseSwtoolList.data
@@ -37,17 +48,17 @@ class FBoardList extends Component {
             var data = SwToolList[i]
 
             result.push(
-                <tr>
+                <tr key={data.bid}>
                     <td>{data.bid}</td>
                     <td>
                         <Link to={'ContentView/' + data.bid}>{data.title}</Link></td>
                     <td>{data.niname}</td>
                     <td>{data.counts}</td>
-                    <td>{data.regdate}</td>
+                    <td>{this.formatDate(data.regdate)}</td>
                 </tr>
             )
         }
-        return result
+        return result;
     }
 
     render() {

@@ -3,56 +3,58 @@ import {Link} from 'react-router-dom';
 import axios from "axios";
 import $, { data } from 'jquery';
 import Swal from 'sweetalert2'
-import cookie from 'react-cookies';
 
 class NBoardView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            username: props.match.params.niname,
+            before_swtcode: props.match.params.num,
             selectedFile: null,
-            niname: '',
-            niname2: '',
+            // Content_Type: application/json,
+            // likeCnt: 0,
+            // like: likeCnt + 1,
+            comment: '',
+            replies: [],
         }
     }
 
     componentDidMount () {
-        var cookie_usernm = cookie.load('niname')
-        this.setState({niname2 : cookie_usernm})
-        
+        if(this.state.before_swtcode == 'register'){
+            $('.modifyclass').hide()
+        }else{
+            this.callSwToolInfoApi()
+            $('.saveclass').hide()
+        }
     }
 
     callSwToolInfoApi = async () => {
-        axios.post('/api/read', {
-            niname: this.state.username,
+        axios.post('http://localhost:8080/api/read', {
+            num: this.state.before_swtcode,
         })
         .then( response => {
             try {
-                var data = response.data
-                this.setState({niname: data.niname})
-                // $('#is_Swt_regdate').val(data.regdate)
-                // $('#is_Swt_niname').val(data.niname)
-                $('#is_Swt_toolname').val(data.title)
+                var data = response.data.json[0]
+                $('#is_Swt_toolname').val(data.swt_toolname)
                 // $('#is_Swt_demo_site').val(data.swt_demo_site)
                 // $('#is_Giturl').val(data.swt_github_url)
-                $('#is_Comments').val(data.cont)
+                $('#is_Comments').val(data.swt_comments)
                 //$('#is_Swt_function').val(data.swt_function)
-                // var manualName = data.swt_manual_path.replace('')
+                var manualName = data.swt_manual_path.replace('/swmanual/','')
                 var fileName = data.swt_big_imgpath.replace('/image/','')
-                // var fileName2 = data.swt_imagepath.replace('/image/','')
+                var fileName2 = data.swt_imagepath.replace('/image/','')
                 $('#upload_img').prepend('<img id="uploadimg" src="'+data.swt_big_imgpath+'"/>')
-                // $('#upload_img2').prepend('<img id="uploadimg2" src="'+data.swt_imagepath+'"/>')
+                $('#upload_img2').prepend('<img id="uploadimg2" src="'+data.swt_imagepath+'"/>')
 
                 $('#imagefile').val(fileName)
-                // $('#imagefile2').val(fileName2)
-                // $('#manualfile').val(manualName)
+                $('#imagefile2').val(fileName2)
+                $('#manualfile').val(manualName)
 
                 if($('#uploadimg').attr('src').indexOf("null") > -1){
                     $('#uploadimg').hide()
                 }
-                // if($('#uploadimg2').attr('src').indexOf("null") > -1){
-                //     $('#uploadimg2').hide()
-                // }
+                if($('#uploadimg2').attr('src').indexOf("null") > -1){
+                    $('#uploadimg2').hide()
+                }
             } catch (error) {
                 alert('작업중 오류가 발생하였습니다.')
             }
@@ -63,7 +65,10 @@ class NBoardView extends Component {
     submitClick = async (type, e) => {
 
         this.Swt_toolname_checker = $('#is_Swt_toolname').val();
+        // this.Swt_demo_site_checker = $('#is_Swt_demo_site').val();
+        // this.Giturl_checker = $('#is_Giturl').val();
         this.Comments_checker = $('#is_Comments').val();
+        // this.Swt_function_checker = $('#is_Swt_function').val();
         
 
         this.fnValidate = (e) => {
@@ -74,7 +79,20 @@ class NBoardView extends Component {
             }
             $('#is_Swt_toolname').removeClass('border_validate_err');
 
-            
+            // if(this.Swt_demo_site_checker === '') {
+            //     $('#is_Swt_demo_site').addClass('border_validate_err');
+            //     alert('데모 URL을 다시 확인해주세요.')
+            //     return false;
+            // }
+            // $('#is_Swt_demo_site').removeClass('border_validate_err');
+
+            // if(this.Giturl_checker === '') {
+            //     $('#is_Giturl').addClass('border_validate_err');
+            //     alert('Github URL을 다시 확인해주세요.')
+            //     return false;
+            // }
+            // $('#is_Giturl').removeClass('border_validate_err');
+
             if(this.Comments_checker === '') {
                 $('#is_Comments').addClass('border_validate_err');
                 alert('내용을 다시 확인해주세요.')
@@ -82,7 +100,12 @@ class NBoardView extends Component {
             }
             $('#is_Comments').removeClass('border_validate_err');
 
-           
+            // if(this.Swt_function_checker === '') {
+            //     $('#is_Swt_function').addClass('border_validate_err');
+            //     alert('상세기능을 다시 확인해주세요.')
+            //     return false;
+            // }
+            // $('#is_Swt_function').removeClass('border_validate_err');
             return true;
         }
 
@@ -91,25 +114,20 @@ class NBoardView extends Component {
             jsonstr = decodeURIComponent(jsonstr);
             var Json_form = JSON.stringify(jsonstr).replace(/\"/gi,'')
             Json_form = "{\"" +Json_form.replace(/\&/g,'\",\"').replace(/=/gi,'\":"')+"\"}";
-            alert(Json_form);
+            //alert(Json_form);
             //Json_form = JSON.parse(Json_form);
-
-
-           
            
 
-            axios.post('/api/write', Json_form, {
+            axios.post('http://localhost:8080/api/register', Json_form, {
                 headers: {
-                  'Content-Type': 'application/json',
+                  'Content_Type': 'application/json',
                 },
               })
             .then( response => {
                 if( response.data == "succ"){
-                    if(type == 'save'){
-                        this.sweetalertSucc('등록이 완료되었습니다.', false)
-                    // }else if(type == "modify"){
-                    //     this.sweetalertSucc('수정이 완료되었습니다.', false)
-                    // }
+                    if(type == 'delete'){
+                        this.sweetalertSucc('삭제되었습니다.', false)
+                    }
                     setTimeout(function() {
                         this.props.history.push('/NBoardList');
                         }.bind(this),1500
@@ -117,10 +135,36 @@ class NBoardView extends Component {
                 }else{
                     alert('1. 작업중 오류가 발생하였습니다.')
                 }  
-            }
             })
             .catch( error => {alert('2. 작업중 오류가 발생하였습니다.');return false;} )
-            
+            /*
+            try {
+                const response = await fetch('http://localhost:8080/api/list', {
+                    method: 'POST',
+                    headers: {
+                    'Content-Type': 'application/json',
+                    },
+                    body: Json_form,
+                });
+                const body = await response.text();
+                body = "succ";
+                if(body == "succ"){
+                    if(type == 'save'){
+                        this.sweetalertSucc('등록이 완료되었습니다.', false)
+                    }else if(type == "modify"){
+                        this.sweetalertSucc('수정이 완료되었습니다.', false)
+                    }
+                    setTimeout(function() {
+                        this.props.history.push('/NBoardList');
+                        }.bind(this),1500
+                    );
+                }else{
+                    alert('1. 작업중 오류가 발생하였습니다.')
+                }  
+            } catch (error) {
+                alert('2. 작업중 오류가 발생하였습니다.')
+            }
+            */
         }
     };
 
@@ -136,15 +180,14 @@ class NBoardView extends Component {
 
     handleFileInput(type, e){
         if(type =='file'){
-            $('#imagefile').val(e.target.name)
+            $('#imagefile').val(e.target.files[0].name)
+        }else if(type =='file2'){
+            $('#imagefile2').val(e.target.files[0].name)
+        }else if(type =='manual'){
+            $('#manualfile').val(e.target.files[0].name)
         }
-        // else if(type =='file2'){
-        //     $('#imagefile2').val(e.target.files[0].name)
-        // }else if(type =='manual'){
-        //     $('#manualfile').val(e.target.files[0].name)
-        // }
         this.setState({
-          selectedFile : e.target,
+          selectedFile : e.target.files[0],
         })
         setTimeout(function() {
             if(type =='manual'){
@@ -156,23 +199,23 @@ class NBoardView extends Component {
         );
     }
 
-    // handlePostMenual(){
-    //     const formData = new FormData();
-    //     formData.append('file', this.state.selectedFile);
-    //     return axios.post("http://192.168.0.83:8080/api/upload", formData).then(res => {
-    //         this.setState({menualName : res.data.filename})
-    //         $('#is_MenualName').remove()
-    //         $('#upload_menual').prepend('<input id="is_MenualName" type="hidden"'
-    //         +'name="files" '+this.state.menualName+'"}/>')
-    //     }).catch(error => {
-    //         alert('9. 작업중 오류가 발생하였습니다.', error, 'error', '닫기')
-    //     })
-    // }    
+    handlePostMenual(){
+        const formData = new FormData();
+        formData.append('file', this.state.selectedFile);
+        return axios.post("/api/upload?type=uploads/swmanual/", formData).then(res => {
+            this.setState({menualName : res.data.filename})
+            $('#is_MenualName').remove()
+            $('#upload_menual').prepend('<input id="is_MenualName" type="hidden"'
+            +'name="is_MenualName" value="/swmanual/'+this.state.menualName+'"}/>')
+        }).catch(error => {
+            alert('작업중 오류가 발생하였습니다.', error, 'error', '닫기')
+        })
+    }    
 
     handlePostImage(type){
         const formData = new FormData();
         formData.append('file', this.state.selectedFile);
-        return axios.post("/api/upload", formData).then(res => {
+        return axios.post("/api/upload?type=uploads/image/", formData).then(res => {
             if(type =='file'){
                 this.setState({fileName : res.data.filename})
                 $('#is_MainImg').remove()
@@ -181,21 +224,49 @@ class NBoardView extends Component {
                 +this.state.fileName+'"/>')
                 $('#upload_img').prepend('<input id="is_MainImg" type="hidden"'
                 +'name="is_MainImg" value="/image/'+this.state.fileName+'"}/>')
+            }else if(type =='file2'){
+                this.setState({fileName2 : res.data.filename})
+                $('#is_LabelImg').remove()
+                $('#uploadimg2').remove()
+                $('#upload_img2').prepend('<img id="uploadimg2" src="/image/'
+                +this.state.fileName2+'"/>')
+                $('#upload_img2').prepend('<input id="is_LabelImg" type="hidden"'
+                +'name="is_LabelImg" value="/image/'+this.state.fileName2+'"}/>')
             }
-            // else if(type =='file2'){
-            //     this.setState({fileName2 : res.data.filename})
-            //     $('#is_LabelImg').remove()
-            //     $('#uploadimg2').remove()
-            //     $('#upload_img2').prepend('<img id="uploadimg2" src="/image/'
-            //     +this.state.fileName2+'"/>')
-            //     $('#upload_img2').prepend('<input id="is_LabelImg" type="hidden"'
-            //     +'name="is_LabelImg" value="/image/'+this.state.fileName2+'"}/>')
-            // }
         }).catch(error => {
-            alert('8. 작업중 오류가 발생하였습니다.')            
+            alert('작업중 오류가 발생하였습니다.')            
         })
 
     }
+
+
+
+
+
+
+    regeistComent = (e) => {
+        this.setState({
+            comment: e.target.value,
+        });
+    };
+    inputComment = (e) => {
+        const add = this.state.replies;
+        add.push(this.state.comment);
+        this.setState({
+            replies: this.state.replies,
+            comment: '',
+        });
+    };
+    PressClick = (e) => {
+        this.inputComment();
+    };
+    pressEnter = (e) => {
+        if (e.key === 'Enter') {
+            this.inputComment();
+        }
+    };
+       
+   
 
     render () {
         return (
@@ -215,52 +286,39 @@ class NBoardView extends Component {
                                 </p>
                                 <div class="tb_outline">
                                     <table class="table_ty1">
-                                        <tr className="tr_tel">
-                                             <th>게시판 종류</th>
-                                                <td>
-                                                    <select id="btype_val" name="btype" className="select_ty1">
-                                                        <option value="">선택</option>
-                                                        <option value="N">공지사항</option>
-                                                        <option value="F">자유게시판</option>
-                                                        <option value="R">리뷰</option>
-                                                        <option value="Q">문의</option>
-                                                    </select>
-                                                    
-                                                </td>
-                                            </tr>
-                                        {/* <tr>
-                                            <th>
-                                                <label for="is_Swt_regdate">작성일</label>
-                                            </th>
-                                            <td>
-                                                <div value="sysdate" name="regdate" id="is_Swt_regdate" class="">{ this.state.regdate }</div>
-                                            </td>
-                                        </tr> */}
-                                        <tr>
-                                            <th>
-                                                <label for="is_Swt_niname">작성자</label>
-                                            </th>
-                                            <td>
-                                                <input type="text"  id="is_Swt_toolname" name="niname" class="" value={this.state.niname2} readonly="readonly"/>
-                                            </td>
-                                        </tr>
                                         <tr>
                                             <th>
                                                 <label for="is_Swt_toolname">제목<span class="red">(*)</span></label>
                                             </th>
                                             <td>
-                                                <input type="text"  id="is_Swt_toolname" name="title" class="" />
+                                                <div  name="title" id="is_Swt_toolname" class=""> {data.title} </div>
                                             </td>
                                         </tr>
+                                        {/* <tr>
+                                            <th>
+                                                <label for="is_Swt_demo_site">데모 URL<span class="red">(*)</span></label>
+                                            </th>
+                                            <td>
+                                                <input type="text" name="is_Swt_demo_site" id="is_Swt_demo_site" class="" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <label for="is_Giturl">Github URL<span class="red">(*)</span></label>
+                                            </th>
+                                            <td>
+                                                <input type="text" name="is_Giturl" id="is_Giturl" class="" />
+                                            </td>
+                                        </tr> */}
                                         <tr>
                                             <th>
                                                 <label for="is_Comments">내용<span class="red">(*)</span></label>
                                             </th>
                                             <td>
-                                                <textarea  id="is_Comments" name="cont" rows="" cols=""></textarea>
+                                                <div name="content" id="is_Comments" rows="" cols="">{ data.content }</div>
                                             </td>
                                         </tr>
-                                        {/* <tr class="div_tb_tr fileb">
+                                        <tr class="div_tb_tr fileb">
                                             <th>
                                             <label for="is_Swt_file">첨부파일<span class="red"></span></label>
                                             </th>
@@ -275,7 +333,7 @@ class NBoardView extends Component {
                                                 </div>
                                             </td>
                                             
-                                        </tr> */}
+                                        </tr>
                                         <tr>
                                             <th>
                                                 이미지파일
@@ -291,18 +349,58 @@ class NBoardView extends Component {
                                                 </div>
                                             </td>
                                         </tr>
-                                       
+                                        {/* <tr>
+                                            <th>
+                                                라벨 이미지
+                                            </th>
+                                            <td className="fileBox fileBox2">
+                                                <label htmlFor='imageSelect2' className="btn_file">파일선택</label>
+                                                <input type="text" id="imagefile2" className="fileName fileName1"
+                                                readOnly="readonly" placeholder="선택된 파일 없음"/>
+                                                <input type="file" id="imageSelect2" className="uploadBtn uploadBtn1"
+                                                onChange={e => this.handleFileInput('file2',e)}/>
+                                                <div id="upload_img2">
+                                                </div>
+                                            </td>
+                                        </tr> */}
+                                        <tr>
+                                            <th>
+                                                <label for="is_Swt_function">좋아요</label>
+                                            </th>
+                                            <td>
+                                                {/* <span onClick={ ()=> { {like} }}>하트</span> */}
+                                                
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <th>
+                                                <label for="is_Swt_function">댓글</label>
+                                            </th>
+                                            {/* <td>
+                                                <ul className="repliy">
+                                                    {this.state.replies.map((el) => (
+                                                        <li>{el}</li>
+                                                    ))}
+                                                </ul>
+                                                <input type="text" name="is_Swt_function" id="is_Swt_function" rows="" cols=""
+                                                onChange={this.regeistComent}
+                                                onKeyPress={this.pressEnter}
+                                                value={this.state.comment}/>
+                                                <button className="upload" onClick={this.PressClick}>등록</button>
+                                            </td> */}
+                                        </tr>
+
                                     </table>
                                     <div class="btn_confirm mt20" style={{"margin-bottom": "44px"}}>
-                                        <Link to={'/NBoardList'} className="bt_ty bt_ty1 cancel_ty1">취소</Link>
-                                        <a href="javascript:" className="bt_ty bt_ty2 submit_ty1 saveclass" 
-                                        onClick={(e) => this.submitClick('save', e)}>저장</a>
-                                        {/* <a href="javascript:" className="bt_ty bt_ty2 submit_ty1 modifyclass" 
-                                        onClick={(e) => this.submitClick('modify', e)}>수정</a> */}
+                                        <Link to={'/NBoardList'} className="bt_ty bt_ty1 cancel_ty1">목록보기</Link>
+                                        <Link to={'/ModyView'+data.num} className="bt_ty bt_ty1 cancel_ty1">수정</Link>
+                                        <a href="javascript:" className="bt_ty bt_ty2 submit_ty1 modifyclass" 
+                                        onClick={(e) => this.submitClick('delete', e)}>삭제</a>
                                     </div>
                                 </div>
                             </article>
-                        </form>	
+                        </form>   
                     </div> 
                 </article>
             </section>

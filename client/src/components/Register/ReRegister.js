@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import axios from "axios";
+import axios from 'axios';
 import Swal from 'sweetalert2';
-import $, { data } from 'jquery';
+import $ from 'jquery';
 import cookie from 'react-cookies';
 
 class ReRegister extends Component {
@@ -18,39 +18,35 @@ class ReRegister extends Component {
             niname: '',
             mid: '',
             pw: '',
+            full_niname: '',
         }
     }
-    componentDidMount() {
+    componentDidMount = async () => {
 
-        var cookie_usernm = cookie.load('niname')
-        var cookie_userid = cookie.load('email')
-        var cookie_userpw = cookie.load('pw')
+        var cookie_usernm = await cookie.load('niname')
+        var cookie_userid = await cookie.load('email')
+        var cookie_userpw = await cookie.load('pw')
         this.setState({ niname: cookie_usernm })
         this.setState({ email: cookie_userid })
         this.setState({ pw: cookie_userpw })
 
-        this. callSwToolInfoApi()
-
+        this.callSwToolInfoApi()
     }
 
 
     callSwToolInfoApi = async () => {
-        //alert("this.state.before_swtcode=" + this.state.before_swtcode);
+
+        //alert("this.state.before_swtcode="+this.state.before_swtcode);
         axios.post('/api/member/readMember', {
             email: this.state.email,
         })
             .then(response => {
                 try {
                     var data = response.data
-
-                    this.setState({ mid: data.mid })
+                    this.setState({ niname: data.niname })
                     this.setState({ name: data.name })
-                    
+                    this.setState({ mid: data.mid })
                     $('#is_niname').val(data.niname)
-                    $('#name_val').val(data.name)
-                    $('#is_mid').val(data.mid)
-
-                    alert("1: " + this.state.name);
                 }
                 catch (error) {
                     alert('3. 작업중 오류가 발생하였습니다.')
@@ -59,39 +55,7 @@ class ReRegister extends Component {
             .catch(error => { alert('4. 작업중 오류가 발생하였습니다.'); return false; });
     }
 
-
-
-
-    // callSwToolInfoApi = async () => {
-    //     axios.post('/api/member/midCk', {
-    //         email: this.state.email,
-
-    //     }) 
-    //         .then(response => {
-    //             try {
-    //                 var data = response.data
-    //                 this.setState({ mid: data.mid })
-    //                 this.setState({ name: data.name })
-    //                 this.setState({ niname: data.niname })
-    //                 $('#niname_val').val(data.niname)
-    //                 $('#name_val').val(data.name)
-    //                 $('#pwd_val').val(data.pw)
-
-    //                 alert("1: "+ this.state.name);
-
-
-    //             }
-    //             catch (error) {
-    //                 alert('3. 작업중 오류가 발생하였습니다.')
-    //             }
-    //         })
-    //         .catch(error => { alert('4. 작업중 오류가 발생하였습니다.'); return false; });
-    // }
-
-
-
     submitClick = async (type, e) => {
-
         this.pwd_val_checker = $('#pwd_val').val();
         this.pwd_cnf_val_checker = $('#pwd_cnf_val').val();
         // this.name_val_checker = $('#name_val').val();
@@ -101,8 +65,6 @@ class ReRegister extends Component {
             var pattern1 = /[0-9]/;
             var pattern2 = /[a-zA-Z]/;
             var pattern3 = /[~!@#$%^&*()_+|<>?:{}]/;
-
-
 
             if (this.niname_val_checker === '') {
                 $('#niname_val').addClass('border_validate_err');
@@ -115,8 +77,6 @@ class ReRegister extends Component {
                 return false;
             }
             $('#niname_val').removeClass('border_validate_err');
-
-
 
             if (this.pwd_val_checker === '') {
                 $('#pwd_val').addClass('border_validate_err');
@@ -151,39 +111,20 @@ class ReRegister extends Component {
                 return false;
             }
             $('#pwd_cnf_val').removeClass('border_validate_err');
-
-
-
-
-
-
-            // $('#major_val').removeClass('border_validate_err');
-            // if(this.phone1_val_checker ==='' || this.phone2_val_checker ===''
-            // || this.phone3_val_checker ==='') {
-            //     $('#phone1_val').addClass('border_validate_err');
-            //     $('#phone2_val').addClass('border_validate_err');
-            //     $('#phone3_val').addClass('border_validate_err');
-            //     this.sweetalert('휴대전화 번호를 입력해주세요.', '', 'info', '닫기')
-            //     return false;
-            // }
-            // $('#phone1_val').removeClass('border_validate_err');
-            // $('#phone2_val').removeClass('border_validate_err');
-            // $('#phone3_val').removeClass('border_validate_err');
             return true;
         }
 
-
-
         if (this.fnValidate()) {
+            this.setState({ full_niname: this.niname_val_checker })
+            //this.state.full_niname = this.niname_val_checker
             this.state.niname = this.niname_val_checker
             axios.post('/api/member/ninameCk', {
                 niname: this.niname_val_checker
-
             })
                 .then(response => {
                     try {
                         const ninameCk = response.data.niname;
-                        alert(ninameCk);
+                        alert("ninameCk: " + response.data.niname);
                         if (ninameCk != null) {
                             $('#niname_val').addClass('border_validate_err');
                             this.sweetalert('이미 존재하는 닉네임입니다.', '', 'info', '닫기')
@@ -196,50 +137,28 @@ class ReRegister extends Component {
                     }
                 })
                 .catch(response => { return false; });
-            // if (this.fnValidate()) {
-            //     this.state.niname = this.niname_val_checker
-            //     axios.post('/api/member/ninameCk', {
-            //         niname: this.niname_val_checker
-            //     })
-            //         .then(response => {
-            //             try {
-            //                 const dupli_count = response.data.mid;
-            //                 if (dupli_count !== 0) {
-            //                     $('#niname_val').addClass('border_validate_err');
-            //                     this.sweetalert('이미 존재하는 닉네임입니다.', '', 'info', '닫기')
-            //                 } else {
-            //                     $('#niname_val').removeClass('border_validate_err');
-            //                     this.fnSignInsert('signup', e)
-            //                 }
-            //             } catch (error) {
-            //                 this.sweetalert('작업중 오류가 발생하였습니다.', error, 'error', '닫기')
-            //             }
-            //         })
-            //         .catch(response => { return false; });
         }
-
-
-
-
-
 
         this.fnSignInsert = async (type, e) => {
             var jsonstr = $("form[name='frm']").serialize();
             jsonstr = decodeURIComponent(jsonstr);
             var Json_form = JSON.stringify(jsonstr).replace(/\"/gi, '')
             Json_form = "{\"" + Json_form.replace(/\&/g, '\",\"').replace(/=/gi, '\":"') + "\"}";
-
+            // alert("1: " + Json_form);
             var Json_data = JSON.parse(Json_form);
 
-            axios.post('/api/modify', Json_data)
+            await axios.post('/api/member/modifyMember', Json_data)
                 .then(response => {
                     try {
-                        if (response.data == "succ") {
+                        if (response.data == "SUCCESS") {
                             if (type == 'modify') {
                                 this.sweetalertSucc('수정되었습니다.', false)
                             }
                             setTimeout(function () {
-                                this.props.history.push('/MainForm');
+                                cookie.remove('email', { path: '/' });
+                                cookie.remove('niname', { path: '/' });
+                                cookie.remove('pw', { path: '/' });
+                                window.location.href = '/login';
                             }.bind(this), 1500
                             );
                         }
@@ -252,10 +171,6 @@ class ReRegister extends Component {
 
         }
     };
-
-    // emailKeyPress = (e) => {
-    //     $('#email_val').removeClass('border_validate_err');
-    // };
 
     pwdKeyPress = (e) => {
         $('#pwd_val').removeClass('border_validate_err');
@@ -302,7 +217,6 @@ class ReRegister extends Component {
         })
     }
 
-
     deleteSwtool = (e) => {
         var event_target = e.target
         this.sweetalertDelete('정말 탈퇴하시겠습니까?', function () {
@@ -313,9 +227,8 @@ class ReRegister extends Component {
                 .then(response => {
                 }).catch(error => { alert('5. 작업중 오류가 발생하였습니다.'); return false; });
         }.bind(this))
-alert( "email: "+this.state.email)
+        alert("email: " + this.state.email)
     }
-
 
     sweetalertDelete = (title, callbackFunc) => {
         Swal.fire({
@@ -338,21 +251,16 @@ alert( "email: "+this.state.email)
                 }.bind(this), 1500
                 );
 
-
                 cookie.remove('email', { path: '/' });
                 cookie.remove('niname', { path: '/' });
                 cookie.remove('pw', { path: '/' });
                 window.location.href = '/MainForm';
-
-
             } else {
                 return false;
             }
             callbackFunc()
         })
     }
-
-
 
     render() {
         return (
@@ -368,61 +276,36 @@ alert( "email: "+this.state.email)
                                             <tr className="re_email">
                                                 <th>이메일</th>
                                                 <td>
-                                                    <div name="email" id="email_val" class="">{this.state.email}</div>
+                                                    <input name="email" id="email_val" class="" readOnly="readonly" value={this.state.email} />
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <th>이름</th>
                                                 <td>
-                                                    <div name="name" id="name_val" class="">{this.state.name}</div>
+                                                    <input name="name" id="name_va" class="" readOnly="readonly" value={this.state.name} />
                                                 </td>
                                             </tr>
-
                                             <tr>
                                                 <th>닉네임</th>
                                                 <td>
                                                     <input id="niname_val" type="text" name="niname" placeholder={this.state.niname}
-                                                        onKeyPress={this.nameKeyPress} />
+                                                        onKeyPress={this.ninameKeyPress} />
                                                 </td>
                                             </tr>
-
-
                                             <tr>
                                                 <th>비밀번호</th>
                                                 <td>
-                                                    <input id="pwd_val" type="password" name="pw" 
+                                                    <input id="pwd_val" type="password" name="pw"
                                                         placeholder="비밀번호를 입력해주세요." onKeyPress={this.pwdKeyPress} />
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <th>비밀번호 확인</th>
                                                 <td>
-                                                    <input id="pwd_cnf_val" type="password" 
+                                                    <input id="pwd_cnf_val" type="password"
                                                         placeholder="비밀번호를 다시 입력해주세요." onKeyPress={this.pwdCnfKeyPress} />
                                                 </td>
                                             </tr>
-
-
-                                            {/* <tr className="tr_tel">
-                                                <th>핸드폰</th>
-                                                <td>
-                                                    <select id="phone1_val" name="is_Userphone1" className="select_ty1">
-                                                        <option value="">선택</option>
-                                                        <option value="010">010</option>
-                                                        <option value="011">011</option>
-                                                        <option value="016">016</option>
-                                                        <option value="017">017</option>
-                                                        <option value="018">018</option>
-                                                        <option value="019">019</option>
-                                                    </select>
-                                                    <span className="tel_dot">-</span>
-                                                    <input id="phone2_val" name="is_Userphone2" max="9999"
-                                                    maxlength="4" onChange={(e) => this.mustNumber("phone2_val")}/>
-                                                    <span className="tel_dot">-</span>
-                                                    <input id="phone3_val" name="is_Userphone3" max="9999"
-                                                    maxlength="4" onChange={(e) => this.mustNumber("phone3_val")}/>
-                                                </td>
-                                            </tr> */}
                                         </table>
                                     </div>
                                 </div>

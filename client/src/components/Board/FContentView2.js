@@ -5,7 +5,7 @@ import $ from 'jquery';
 import Swal from 'sweetalert2'
 import cookie from 'react-cookies';
 
-class NContentView2 extends Component {
+class FContentView2 extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -99,7 +99,7 @@ class NContentView2 extends Component {
                                 this.sweetalertSucc('수정되었습니다.', false)
                             }
                             setTimeout(function () {
-                                this.props.history.push('/NBoardList');
+                                this.props.history.push('/FBoardList');
                             }.bind(this), 1500
                             );
                         }
@@ -241,7 +241,7 @@ class NContentView2 extends Component {
 
                                     </table>
                                     <div class="btn_confirm mt20" style={{ "margin-bottom": "44px" }}>
-                                        <Link to={'/NboardList'} className="bt_ty bt_ty1 cancel_ty1">취소</Link>
+                                        <Link to={'/FboardList'} className="bt_ty bt_ty1 cancel_ty1">취소</Link>
                                         <a href="javascript:" className="bt_ty bt_ty2 submit_ty1 modifyclass"
                                             onClick={(e) => this.submitClick('modify', e)}>수정</a>
                                     </div>
@@ -255,4 +255,4 @@ class NContentView2 extends Component {
     }
 }
 
-export default NContentView2;
+export default FContentView2;
