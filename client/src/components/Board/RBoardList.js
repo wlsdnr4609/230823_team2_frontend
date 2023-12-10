@@ -1,67 +1,92 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from "axios";
+import $ from 'jquery';
 
 class RBoardList extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            responseSwtoolList: '',
-            append_SwtoolList: '',
-        }
+            responseSwtoolList: [],
+            currentPage: 1,
+            totalPage: 1,
+            itemsPerPage: 10,
+        };
     }
     componentDidMount() {
         this.callSwToolListApi()
     }
 
-    callSwToolListApi = async () => {
-        axios.get('/api/list?btype=R', {
-        })
-            .then(response => {
-                try {
-                    this.setState({ responseSwtoolList: response });
-                    this.setState({ append_SwtoolList: this.SwToolListAppend() });
-                } catch (error) {
-                    alert('작업중 오류가 발생하였습니다.');
-                }
-            })
-            .catch(error => { alert('작업중 오류가 발생하였습니다.'); return false; });
-    }
+    callSwToolListApi = async (page = 1) => {
+        try {
+            const response = await axios.get(`/api/list?btype=R&page=${page}&perPageNum=10`);
+            const totalCount = response.headers['x-total-count'];
+            this.setState({ totalPage: Math.ceil(totalCount / 10) });
+
+            this.setState({
+                responseSwtoolList: response.data,
+                currentPage: page,
+                totalCount: totalCount,
+
+            });
+        } catch (error) {
+            alert('작업중 오류가 발생하였습니다.');
+        }
+    };
+    handlePageChange = (pageNumber) => {
+        this.callSwToolListApi(pageNumber);
+    };
+
+    renderTableRows = () => {
+        const { responseSwtoolList, itemsPerPage } = this.state;
+
+        // 현재 페이지에 해당하는 데이터만 추출
+        const startIndex = (this.state.currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const currentPageData = responseSwtoolList.slice(startIndex, endIndex);
+
+        return currentPageData.map((data) => (
+            <tr key={data.bid}>
+                <td>{data.bid}</td>
+                <td>
+                    <Link to={`RContentView/${data.bid}`}>{data.title}</Link>
+                </td>
+                <td>{data.niname}</td>
+                <td>{data.counts}</td>
+                <td>{this.formatDate(data.regdate)}</td>
+            </tr>
+        ));
+    };
+
 
     formatDate = (timestamp) => {
         const date = new Date(timestamp);
-        const year = date.getFullYear().toString().slice(2); 
-        const month = ('0' + (date.getMonth() + 1)).slice(-2); 
-        const day = ('0' + date.getDate()).slice(-2); 
-        const hours = ('0' + date.getHours()).slice(-2); 
-        const minutes = ('0' + date.getMinutes()).slice(-2); 
-      
+        const year = date.getFullYear().toString().slice(2);
+        const month = ('0' + (date.getMonth() + 1)).slice(-2);
+        const day = ('0' + date.getDate()).slice(-2);
+        const hours = ('0' + date.getHours()).slice(-2);
+        const minutes = ('0' + date.getMinutes()).slice(-2);
+
         return `${year}/${month}/${day} ${hours}:${minutes}`;
     };
+    
+    //게시판 서치 api주소 확인해서 변경
 
-    SwToolListAppend = () => {
-        let result = []
-        var SwToolList = this.state.responseSwtoolList.data
-
-        for (let i = 0; i < SwToolList.length; i++) {
-            var data = SwToolList[i]
-
-            result.push(
-                <tr key={data.bid}>
-                    <td>{data.bid}</td>
-                    <td>
-                        <Link to={'ContentView/' + data.bid}>{data.title}</Link></td>
-                    <td>{data.niname}</td>
-                    <td>{data.counts}</td>
-                    <td>{this.formatDate(data.regdate)}</td>
-                </tr>
-            )
-        }
-        return result;
-    }
+    // handleFileInput(value, e){
+    //     if(value ==='title'){
+    //         $('#imagefile').val(title)
+    //     }else if(value ==='niname'){
+    //         $('#imagefile2').val(niname)
+    //     }
+    //     this.setState({
+    //       selected : e.target.files[0],
+    //     })
+    // }
 
     render() {
+        const { currentPage, totalPage } = this.state;
+        const pageNumbers = Array.from({ length: totalPage }, (_, i) => i + 1);
         return (
             <section class="sub_wrap" >
                 <article class="s_cnt mp_pro_li ct1 mp_pro_li_admin">
@@ -69,18 +94,18 @@ class RBoardList extends Component {
                         <h2 class="s_tit1">리뷰</h2>
                         <div class="li_top_sch af">
                             <td class="fileBox fileBox_w1">
-                                <select id="manualfile" name="email2" className="btn_file">
+                                <select id="fileSh" name="email2" className="btn_file">
                                     <option value=""> 선택 </option>
                                     <option value='title'>제목</option>
                                     <option value='niname'>작성자</option>
                                 </select>
                                 <input type="text" id="manualfile" class="fileName fileName1" />
-                                <label for="uploadBtn1" class="btn_file">검색</label>
+                                <a href="javascript:" className="btn_file"
+                                    onClick={(e) => this.handleFileInput('file', e)}>검색</a>
                             </td>
-                            <Link to={'/NBoardView/'} className="sch_bt2 wi_au"> 글쓰기</Link>
+                            <Link to={'/RBoardView/'} className="sch_bt2 wi_au"> 글쓰기</Link>
                         </div>
                     </div>
-
                     <div class="list_cont list_cont_admin">
                         <table class="table_ty1 ad_tlist">
                             <tr>
@@ -89,12 +114,27 @@ class RBoardList extends Component {
                                 <th>작성자</th>
                                 <th>조회수</th>
                                 <th>작성일</th>
-
                             </tr>
                         </table>
-                        <table class="table_ty2 ad_tlist">
-                            {this.state.append_SwtoolList}
+                        <table className="table_ty2 ad_tlist">
+                            <tbody>{this.renderTableRows()}</tbody>
                         </table>
+                        <form className="pagination">
+                            <button className="pagination_bt1" onClick={() => this.handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+                                이전
+                            </button>
+                            {pageNumbers.map((number) => (
+                                <button id="pagination_bt2"
+                                    key={number}
+                                    onClick={() => this.handlePageChange(number)}
+                                    className={currentPage === number ? 'active' : ''}>
+                                    {number}
+                                </button>
+                            ))}
+                            <button className="pagination_bt1" onClick={() => this.handlePageChange(currentPage + 1)} disabled={currentPage === totalPage}>
+                                다음
+                            </button>
+                        </form>
                     </div>
                 </article>
             </section>

@@ -9,8 +9,6 @@ class NBoardList extends Component {
 
         this.state = {
             responseSwtoolList: [],
-            append_SwtoolList: '',
-            selected: null,
             currentPage: 1,
             totalPage: 1,
             itemsPerPage: 10,

@@ -42,7 +42,7 @@ border {overflow:auto;border-radius:5px;border-color:#bdbdbd; }
 .mb20{margin-bottom: 20px;}
 /*버튼*/
 .bt_ty1{display: inline-block;}
-.bt_ty1 a{font-size: 14px; color: #fff; height: 27px; line-height: 27px; background: #2b62c6; text-align: center; border-radius: 5px; padding: 0 7px; transition:.3s;}
+.bt_ty1 a{font-size: 14px; color: #fff; height: 27px; line-height: 27px; background: #4682B4; text-align: center; border-radius: 5px; padding: 0 7px; transition:.3s;}
 .bt_ty1 a:hover{background: #000;}
 .bt_ty1{background: #67afc7; border-radius: 5px}
 .bt_ty2{background: #67afc7; border-radius: 5px}
@@ -102,7 +102,7 @@ border {overflow:auto;border-radius:5px;border-color:#bdbdbd; }
 .hd_left > li > .box2 ul li:hover a span{text-decoration: underline;}
 .hd_left > li > .box2 .bt_ty1{margin-top: 21px;}
 .h_nav {height: 99px;}
-.h_nav .logo{float: left; width: 135px;}
+.h_nav .logo{float: left; width: 135px; }
 /* .h_nav .logo a{display: block; height: 99px; background: url(../img/layout/logo.jpg) left center no-repeat;} */
 .h_nav .logo a{display: block; margin-top:10px; height: 65px; width: 200px;}
 .h_nav .gnb{float: right;}
@@ -146,14 +146,14 @@ border {overflow:auto;border-radius:5px;border-color:#bdbdbd; }
 .m_login ul li a{position: relative; text-align: left; font-size: 14px; line-height: 14px; color: rgba(255,255,255,0.8); padding: 0 14px; font-weight: 400;; transition:.3s;}
 .m_login ul li:first-child a:after{position: absolute; content:''; width: 1px; height: 9px; background: #fff; opacity: 0.15; right: 0; top: 50%; margin-top: -3px;}
 .m_login ul li:first-child a{padding-left: 0;}
-.m_login .s_bt{background: #0b9191; color: #f2f2f2; font-size: 20px; line-height: 65px; height: 65px; border: 0; width: 418px; transition:.3s;}
+.m_login .s_bt{background: #4077a4; color: #f2f2f2; font-size: 20px; line-height: 65px; height: 65px; border: 0; width: 418px; transition:.3s;}
 
 .btn_confirm_m{text-align: center; overflow: hidden; width: 418px; margin-top: 30px;}
 .bt_ty_m{width: 204px; display: block; float: left; margin-right: 10px; height: 65px; line-height: 65px; font-size: 20px; text-align: center; }
 .bt_ty_m:hover:before{left: -13%;}
 
 /*오버*/
-.m_login .s_bt:hover{background: #0b9191;}
+.m_login .s_bt:hover{background: #4a8fa5;}
 .m_login ul li:hover a{color: #fff;}
 .in_ty1:hover{box-shadow:0px 0px 20px rgba(255,255,255,0.3); }
 
@@ -252,7 +252,7 @@ border {overflow:auto;border-radius:5px;border-color:#bdbdbd; }
 .schb_ty1 li label.on:after{opacity: 1;}
 .sch_bt{position: relative; display: block; width: 51px; height: 45px; background: #4682b4; transition:.3s;}
 .sch_bt:before{position: absolute; content:''; width: 51px; height: 45px; background: url(../img/sub/sch_ddot.png) center no-repeat;}
-.sch_bt2{font-size: 16px; color: #fff; background: #4682b4; height: 45px; line-height: 45px; text-align: center; position: relative; width: 172px; font-weight: 400; transition:.3s;}
+.sch_bt2{font-size: 16px; color: #fff; background: #4682B4; border-radius: 5px; height: 45px; line-height: 45px; text-align: center; position: relative; width: 172px; font-weight: 400; transition:.3s;}
 .sch_bt2:after{display: inline-block; content:''; width: 16px; height: 11px; background: url(../img/sub/schb2_icon.png) center no-repeat; margin-left: 10px; }
 .sch_bt:hover,
 .sch_bt2:hover{background: #79b6ca;}
@@ -774,6 +774,16 @@ td.check_ty1 label:after{margin-top: 7px;}
 #pagination_bt2{box-sizing: border-box; border:1px solid #ddd; font-size: 15px; color: #a1a1a1; background: url(../img/sub/file_bg.png) left center; border-radius: 5px; width:30px;height:30px; cursor: pointer;}
 .pagination{text-align: center; margin: 0 auto;}
 .likes_bt{text-align: right;}
+h1{ font-size: 6em; width: 400px; line-height: 24px; color: #000; font-family: fantasy; position: absolute; top: 300px; right: 140px; animation: slide 1s ease-out;}
+@keyframes slide {
+    from{right: -500px; opacity: 0;}
+    to{right: 140px; opacity: 1;}
+}
+
+
+
+
+
 
 
 

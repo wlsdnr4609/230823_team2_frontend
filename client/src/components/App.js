@@ -21,7 +21,7 @@ import Footer from './Footer/Footer';
 // login
 import LoginForm from './LoginForm';
 
-//보드리스트
+//글리스트
 import NBoardList from './Board/NBoardList';
 import QBoardList from './Board/QBoardList';
 import FBoardList from './Board/FBoardList';
@@ -145,10 +145,10 @@ class App extends Component {
         <Route path='/FBoardList' component={FBoardList} />
         <Route path='/RBoardList' component={RBoardList} />
         {/* 글쓰기 */}
-        <Route path='/QBoardView/:bid' component={QBoardView} />
-        <Route path='/FBoardView/:bid' component={FBoardView} />
-        <Route path='/NBoardView/:bid' component={NBoardView} />
-        <Route path='/RBoardView/:bid' component={RBoardView} />
+        <Route path='/QBoardView/' component={QBoardView} />
+        <Route path='/FBoardView/' component={FBoardView} />
+        <Route path='/NBoardView/' component={NBoardView} />
+        <Route path='/RBoardView/' component={RBoardView} />
         {/* 글보기 */}
         <Route path='/NContentView/:bid' component={NContentView} />
         <Route path='/FContentView/:bid' component={FContentView} />

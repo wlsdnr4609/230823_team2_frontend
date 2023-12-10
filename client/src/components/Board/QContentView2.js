@@ -5,7 +5,7 @@ import $ from 'jquery';
 import Swal from 'sweetalert2'
 import cookie from 'react-cookies';
 
-class NContentView2 extends Component {
+class QContentView2 extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -36,22 +36,22 @@ class NContentView2 extends Component {
                     $('#is_Swt_toolname').val(data.title)
                     $('#is_Comments').val(data.cont)
 
-                    var manualName = data.swt_manual_path.replace('/swmanual/','')
-                    var fileName = data.swt_big_imgpath.replace('/image/','')
-                    var fileName2 = data.swt_imagepath.replace('/image/','')
-                    $('#upload_img').prepend('<img id="uploadimg" src="'+data.swt_big_imgpath+'"/>')
-                    $('#upload_img2').prepend('<img id="uploadimg2" src="'+data.swt_imagepath+'"/>')
+                    // var manualName = data.swt_manual_path.replace('/swmanual/','')
+                    // var fileName = data.swt_big_imgpath.replace('/image/','')
+                    // var fileName2 = data.swt_imagepath.replace('/image/','')
+                    // $('#upload_img').prepend('<img id="uploadimg" src="'+data.swt_big_imgpath+'"/>')
+                    // $('#upload_img2').prepend('<img id="uploadimg2" src="'+data.swt_imagepath+'"/>')
 
-                    $('#imagefile').val(fileName)
-                    $('#imagefile2').val(fileName2)
-                    $('#manualfile').val(manualName)
+                    // $('#imagefile').val(fileName)
+                    // $('#imagefile2').val(fileName2)
+                    // $('#manualfile').val(manualName)
 
-                    if($('#uploadimg').attr('src').indexOf("null") > -1){
-                        $('#uploadimg').hide()
-                    }
-                    if($('#uploadimg2').attr('src').indexOf("null") > -1){
-                        $('#uploadimg2').hide()
-                     }
+                    // if($('#uploadimg').attr('src').indexOf("null") > -1){
+                    //     $('#uploadimg').hide()
+                    // }
+                    // if($('#uploadimg2').attr('src').indexOf("null") > -1){
+                    //     $('#uploadimg2').hide()
+                    //  }
                 } catch (error) {
                     alert('1. 작업중 오류가 발생하였습니다.')
                 }
@@ -99,7 +99,7 @@ class NContentView2 extends Component {
                                 this.sweetalertSucc('수정되었습니다.', false)
                             }
                             setTimeout(function () {
-                                this.props.history.push('/NBoardList');
+                                this.props.history.push('/QBoardList');
                             }.bind(this), 1500
                             );
                         }
@@ -241,7 +241,7 @@ class NContentView2 extends Component {
 
                                     </table>
                                     <div class="btn_confirm mt20" style={{ "margin-bottom": "44px" }}>
-                                        <Link to={'/NboardList'} className="bt_ty bt_ty1 cancel_ty1">취소</Link>
+                                        <Link to={'/QboardList'} className="bt_ty bt_ty1 cancel_ty1">취소</Link>
                                         <a href="javascript:" className="bt_ty bt_ty2 submit_ty1 modifyclass"
                                             onClick={(e) => this.submitClick('modify', e)}>수정</a>
                                     </div>
@@ -255,4 +255,4 @@ class NContentView2 extends Component {
     }
 }
 
-export default NContentView2;
+export default QContentView2;

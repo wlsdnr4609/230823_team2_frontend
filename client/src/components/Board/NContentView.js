@@ -88,7 +88,7 @@ class NContentView extends Component {
             title: title,
             text: "",
             icon: 'warning',
-            showCancelButton: true,
+            // showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Yes'
@@ -141,7 +141,7 @@ class NContentView extends Component {
                                 this.sweetalertSucc('등록되었습니다.', false)
                             }
                             setTimeout(function() {
-                                this.props.history.push('/NBoardList');
+                                this.props.history.push('/NContentView');
                                 }.bind(this),1500
                             );
                             // setTimeout(function () {

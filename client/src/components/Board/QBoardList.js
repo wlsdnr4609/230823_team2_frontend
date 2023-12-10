@@ -1,46 +1,69 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from "axios";
-import cookie from 'react-cookies';
 import $ from 'jquery';
+import cookie from 'react-cookies';
 
 class QBoardList extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            responseSwtoolList: '',
-            append_SwtoolList: '',
-            selected: null,
-            niname: '',
-        }
+            responseSwtoolList: [],
+            currentPage: 1,
+            totalPage: 1,
+            itemsPerPage: 10,
+            niname2: '', //로그인한 닉네임
+        };
     }
     componentDidMount() {
         var cookie_usernm = cookie.load('niname')
-        this.setState({ niname: cookie_usernm })
-
+        this.setState({ niname2: cookie_usernm })  //niname2=로그인한 사람
         this.callSwToolListApi()
     }
 
-    callSwToolListApi = async () => {
-        axios.post('/api/qlist', {
-            btype: "Q",
-            niname: this.state.niname
-        })
-            .then(response => {
-                try {
-                    this.setState({ responseSwtoolList: response });
-                    this.setState({ append_SwtoolList: this.SwToolListAppend() });
-                } catch (error) {
-                    alert('작업중 오류가 발생하였습니다.');
-                }
-            })
-            .catch(error => { alert('작업중 오류가 발생하였습니다.'); return false; });
-    }
+    callSwToolListApi = async (page = 1) => {
+        try {
+            const response = await axios.post(`/api/list?btype=Q&page=${page}&perPageNum=10`, {
+                niname: this.state.niname2,
+            });
+            const totalCount = response.headers['x-total-count'];
+            this.setState({ totalPage: Math.ceil(totalCount / 10) });
 
-    
+            this.setState({
+                responseSwtoolList: response.data,
+                currentPage: page,
+                totalCount: totalCount,
 
+            });
+        } catch (error) {
+            alert('작업중 오류가 발생하였습니다.');
+        }
+    };
+    handlePageChange = (pageNumber) => {
+        this.callSwToolListApi(pageNumber);
+    };
 
+    renderTableRows = () => {
+        const { responseSwtoolList, itemsPerPage } = this.state;
+
+        // 현재 페이지에 해당하는 데이터만 추출
+        const startIndex = (this.state.currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const currentPageData = responseSwtoolList.slice(startIndex, endIndex);
+
+        return currentPageData.map((data) => (
+            <tr key={data.bid}>
+                <td>{data.bid}</td>
+                <td>
+                    <Link to={`QContentView/${data.bid}`}>{data.title}</Link>
+                </td>
+                <td>{data.niname}</td>
+                <td>{data.counts}</td>
+                <td>{this.formatDate(data.regdate)}</td>
+            </tr>
+        ));
+    };
 
 
     formatDate = (timestamp) => {
@@ -53,39 +76,28 @@ class QBoardList extends Component {
 
         return `${year}/${month}/${day} ${hours}:${minutes}`;
     };
+    
+    //게시판 서치 api주소 확인해서 변경
 
-    SwToolListAppend = () => {
-        let result = []
-        var SwToolList = this.state.responseSwtoolList.data
-
-        for (let i = 0; i < SwToolList.length; i++) {
-            var data = SwToolList[i]
-
-            result.push(
-                <tr key={data.bid}>
-                    <td>{data.bid}</td>
-                    <td>
-                        <Link to={'ContentView/' + data.bid}>{data.title}</Link></td>
-                    <td>{data.niname}</td>
-                    <td>{data.counts}</td>
-                    <td>{this.formatDate(data.regdate)}</td>
-                </tr>
-            )
-        }
-        return result;
-    }
-
-
-
-
-
+    // handleFileInput(value, e){
+    //     if(value ==='title'){
+    //         $('#imagefile').val(title)
+    //     }else if(value ==='niname'){
+    //         $('#imagefile2').val(niname)
+    //     }
+    //     this.setState({
+    //       selected : e.target.files[0],
+    //     })
+    // }
 
     render() {
+        const { currentPage, totalPage } = this.state;
+        const pageNumbers = Array.from({ length: totalPage }, (_, i) => i + 1);
         return (
             <section class="sub_wrap" >
                 <article class="s_cnt mp_pro_li ct1 mp_pro_li_admin">
                     <div class="li_top">
-                        <h2 class="s_tit1">공지사항</h2>
+                        <h2 class="s_tit1">문의</h2>
                         <div class="li_top_sch af">
                             <td class="fileBox fileBox_w1">
                                 <select id="fileSh" name="email2" className="btn_file">
@@ -96,15 +108,10 @@ class QBoardList extends Component {
                                 <input type="text" id="manualfile" class="fileName fileName1" />
                                 <a href="javascript:" className="btn_file"
                                     onClick={(e) => this.handleFileInput('file', e)}>검색</a>
-                                {/* <label for="uploadBtn1" class="btn_file">검색</label>
-                                <input type="file" id="imageSelect" className="uploadBtn uploadBtn1"
-                                                onChange={e => this.handleFileInput('file',e)}/> */}
-
                             </td>
-                            <Link to={'/NBoardView/'} className="sch_bt2 wi_au"> 글쓰기</Link>
+                            <Link to={'/QBoardView/'} className="sch_bt2 wi_au"> 글쓰기</Link>
                         </div>
                     </div>
-
                     <div class="list_cont list_cont_admin">
                         <table class="table_ty1 ad_tlist">
                             <tr>
@@ -113,12 +120,27 @@ class QBoardList extends Component {
                                 <th>작성자</th>
                                 <th>조회수</th>
                                 <th>작성일</th>
-
                             </tr>
                         </table>
-                        <table class="table_ty2 ad_tlist">
-                            {this.state.append_SwtoolList}
+                        <table className="table_ty2 ad_tlist">
+                            <tbody>{this.renderTableRows()}</tbody>
                         </table>
+                        <form className="pagination">
+                            <button className="pagination_bt1" onClick={() => this.handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+                                이전
+                            </button>
+                            {pageNumbers.map((number) => (
+                                <button id="pagination_bt2"
+                                    key={number}
+                                    onClick={() => this.handlePageChange(number)}
+                                    className={currentPage === number ? 'active' : ''}>
+                                    {number}
+                                </button>
+                            ))}
+                            <button className="pagination_bt1" onClick={() => this.handlePageChange(currentPage + 1)} disabled={currentPage === totalPage}>
+                                다음
+                            </button>
+                        </form>
                     </div>
                 </article>
             </section>

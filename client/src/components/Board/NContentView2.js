@@ -36,22 +36,22 @@ class NContentView2 extends Component {
                     $('#is_Swt_toolname').val(data.title)
                     $('#is_Comments').val(data.cont)
 
-                    var manualName = data.swt_manual_path.replace('/swmanual/','')
-                    var fileName = data.swt_big_imgpath.replace('/image/','')
-                    var fileName2 = data.swt_imagepath.replace('/image/','')
-                    $('#upload_img').prepend('<img id="uploadimg" src="'+data.swt_big_imgpath+'"/>')
-                    $('#upload_img2').prepend('<img id="uploadimg2" src="'+data.swt_imagepath+'"/>')
+                    // var manualName = data.swt_manual_path.replace('/swmanual/','')
+                    // var fileName = data.swt_big_imgpath.replace('/image/','')
+                    // var fileName2 = data.swt_imagepath.replace('/image/','')
+                    // $('#upload_img').prepend('<img id="uploadimg" src="'+data.swt_big_imgpath+'"/>')
+                    // $('#upload_img2').prepend('<img id="uploadimg2" src="'+data.swt_imagepath+'"/>')
 
-                    $('#imagefile').val(fileName)
-                    $('#imagefile2').val(fileName2)
-                    $('#manualfile').val(manualName)
+                    // $('#imagefile').val(fileName)
+                    // $('#imagefile2').val(fileName2)
+                    // $('#manualfile').val(manualName)
 
-                    if($('#uploadimg').attr('src').indexOf("null") > -1){
-                        $('#uploadimg').hide()
-                    }
-                    if($('#uploadimg2').attr('src').indexOf("null") > -1){
-                        $('#uploadimg2').hide()
-                     }
+                    // if($('#uploadimg').attr('src').indexOf("null") > -1){
+                    //     $('#uploadimg').hide()
+                    // }
+                    // if($('#uploadimg2').attr('src').indexOf("null") > -1){
+                    //     $('#uploadimg2').hide()
+                    //  }
                 } catch (error) {
                     alert('1. 작업중 오류가 발생하였습니다.')
                 }
