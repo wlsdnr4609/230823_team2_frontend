@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import axios from "axios";
-import $ from 'jquery';
+import axios from 'axios';
 
 class RBoardList extends Component {
     constructor(props) {
@@ -14,8 +13,9 @@ class RBoardList extends Component {
             itemsPerPage: 10,
         };
     }
+
     componentDidMount() {
-        this.callSwToolListApi()
+        this.callSwToolListApi();
     }
 
     callSwToolListApi = async (page = 1) => {
@@ -41,14 +41,19 @@ class RBoardList extends Component {
     renderTableRows = () => {
         const { responseSwtoolList, itemsPerPage } = this.state;
 
+        // 최신 데이터 순서로 정렬
+        const sortedList = responseSwtoolList.slice().sort((a, b) => new Date(b.regdate) - new Date(a.regdate));
+
         // 현재 페이지에 해당하는 데이터만 추출
         const startIndex = (this.state.currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
-        const currentPageData = responseSwtoolList.slice(startIndex, endIndex);
+        const currentPageData = sortedList.slice(startIndex, endIndex).reverse(); // 역순으로 정렬
 
-        return currentPageData.map((data) => (
+        const totalItemCount = sortedList.length;
+
+        return currentPageData.map((data, index) => (
             <tr key={data.bid}>
-                <td>{data.bid}</td>
+                <td>{totalItemCount - (startIndex + index)}</td>
                 <td>
                     <Link to={`RContentView/${data.bid}`}>{data.title}</Link>
                 </td>
@@ -58,8 +63,6 @@ class RBoardList extends Component {
             </tr>
         ));
     };
-
-
     formatDate = (timestamp) => {
         const date = new Date(timestamp);
         const year = date.getFullYear().toString().slice(2);
@@ -70,30 +73,18 @@ class RBoardList extends Component {
 
         return `${year}/${month}/${day} ${hours}:${minutes}`;
     };
-    
-    //게시판 서치 api주소 확인해서 변경
-
-    // handleFileInput(value, e){
-    //     if(value ==='title'){
-    //         $('#imagefile').val(title)
-    //     }else if(value ==='niname'){
-    //         $('#imagefile2').val(niname)
-    //     }
-    //     this.setState({
-    //       selected : e.target.files[0],
-    //     })
-    // }
 
     render() {
         const { currentPage, totalPage } = this.state;
         const pageNumbers = Array.from({ length: totalPage }, (_, i) => i + 1);
+
         return (
-            <section class="sub_wrap" >
-                <article class="s_cnt mp_pro_li ct1 mp_pro_li_admin">
-                    <div class="li_top">
-                        <h2 class="s_tit1">리뷰</h2>
-                        <div class="li_top_sch af">
-                            <td class="fileBox fileBox_w1">
+            <section className="sub_wrap">
+                <article className="s_cnt mp_pro_li ct1 mp_pro_li_admin">
+                    <div className="li_top">
+                        <h2 className="s_tit1">공지사항</h2>
+                        <div className="li_top_sch af">
+                        <td class="fileBox fileBox_w1">
                                 <select id="fileSh" name="email2" className="btn_file">
                                     <option value=""> 선택 </option>
                                     <option value='title'>제목</option>
@@ -103,22 +94,29 @@ class RBoardList extends Component {
                                 <a href="javascript:" className="btn_file"
                                     onClick={(e) => this.handleFileInput('file', e)}>검색</a>
                             </td>
-                            <Link to={'/RBoardView/'} className="sch_bt2 wi_au"> 글쓰기</Link>
+                            <Link to="/RBoardView/" className="sch_bt2 wi_au">
+                                글쓰기
+                            </Link>
                         </div>
                     </div>
-                    <div class="list_cont list_cont_admin">
-                        <table class="table_ty1 ad_tlist">
-                            <tr>
-                                <th>글번호</th>
-                                <th>제목</th>
-                                <th>작성자</th>
-                                <th>조회수</th>
-                                <th>작성일</th>
-                            </tr>
+
+                    <div className="list_cont list_cont_admin">
+                        <table className="table_ty1 ad_tlist">
+                            <thead>
+                                <tr>
+                                    <th>글번호</th>
+                                    <th>제목</th>
+                                    <th>작성자</th>
+                                    <th>조회수</th>
+                                    <th>작성일</th>
+                                </tr>
+                            </thead>
                         </table>
+
                         <table className="table_ty2 ad_tlist">
                             <tbody>{this.renderTableRows()}</tbody>
                         </table>
+
                         <div className="pagination">
                             <button className="pagination_bt1" onClick={() => this.handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
                                 이전
@@ -127,7 +125,8 @@ class RBoardList extends Component {
                                 <button id="pagination_bt2"
                                     key={number}
                                     onClick={() => this.handlePageChange(number)}
-                                    className={currentPage === number ? 'active' : ''}>
+                                    className={currentPage === number ? 'active' : ''}
+                                >
                                     {number}
                                 </button>
                             ))}

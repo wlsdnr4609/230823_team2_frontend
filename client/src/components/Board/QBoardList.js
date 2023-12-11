@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from "axios";
-import $ from 'jquery';
+import moment from 'moment';
+import $, { data } from 'jquery';
 import cookie from 'react-cookies';
 
 class QBoardList extends Component {
@@ -13,19 +14,19 @@ class QBoardList extends Component {
             currentPage: 1,
             totalPage: 1,
             itemsPerPage: 10,
-            niname2: '', //로그인한 닉네임
+            niname: '', //로그인한 닉네임
         };
     }
     componentDidMount() {
         var cookie_usernm = cookie.load('niname')
-        this.setState({ niname2: cookie_usernm })  //niname2=로그인한 사람
+        this.setState({ niname: cookie_usernm })  //niname2=로그인한 사람
         this.callSwToolListApi()
     }
 
     callSwToolListApi = async (page = 1) => {
         // try {
         //     const response = await axios.post(`/api/qlist?btype=Q&page=${page}&perPageNum=10`, {
-        //         niname: this.state.niname2,
+        //         niname: this.state.niname,
         //     });
         try {
             const response = await axios.get(`/api/list?btype=Q&page=${page}&perPageNum=10`)
@@ -42,29 +43,40 @@ class QBoardList extends Component {
             alert('작업중 오류가 발생하였습니다.');
         }
     };
-    handlePageChange = (pageNumber) => {
-        this.callSwToolListApi(pageNumber);
-    };
-
-    renderTableRows = () => {
-        const { responseSwtoolList, itemsPerPage } = this.state;
+    combinedRenderTableRows = (isCurrentUser) => {
+        const { responseSwtoolList, itemsPerPage, currentPage, niname } = this.state;
 
         // 현재 페이지에 해당하는 데이터만 추출
-        const startIndex = (this.state.currentPage - 1) * itemsPerPage;
+        const startIndex = (currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
         const currentPageData = responseSwtoolList.slice(startIndex, endIndex);
 
-        return currentPageData.map((data) => (
-            <tr key={data.bid}>
-                <td>{data.bid}</td>
-                <td>
-                    <Link to={`QContentView/${data.bid}`}>{data.title}</Link>
-                </td>
-                <td>{data.niname}</td>
-                <td>{data.counts}</td>
-                <td>{this.formatDate(data.regdate)}</td>
-            </tr>
-        ));
+        let result = [];
+
+        for (let i = 0; i < currentPageData.length; i++) {
+            const data = currentPageData[i];
+
+            // 글쓴이의 닉네임과 현재 로그인한 사용자의 닉네임을 비교하여 조건에 따라 보이도록 함
+            if (isCurrentUser ? data.niname === niname : true) {
+                result.push(
+                    <tr key={data.bid}>
+                        <td>{data.bid}</td>
+                        <td>
+                            <Link to={`QContentView/${data.bid}`}>{data.title}</Link>
+                        </td>
+                        <td>{data.niname}</td>
+                        <td>{data.counts}</td>
+                        <td>{this.formatDate(data.regdate)}</td>
+                    </tr>
+                );
+            }
+        }
+
+        return result;
+    };
+
+    handlePageChange = (pageNumber) => {
+        this.callSwToolListApi(pageNumber);
     };
 
 
@@ -93,6 +105,7 @@ class QBoardList extends Component {
     // }
 
     render() {
+        const renderedRows = this.combinedRenderTableRows(true);
         const { currentPage, totalPage } = this.state;
         const pageNumbers = Array.from({ length: totalPage }, (_, i) => i + 1);
         return (
@@ -125,7 +138,8 @@ class QBoardList extends Component {
                             </tr>
                         </table>
                         <table className="table_ty2 ad_tlist">
-                            <tbody>{this.renderTableRows()}</tbody>
+                            <tbody>{renderedRows}</tbody>
+                            {/* <tbody>{this.renderTableRows()}</tbody> */}
                         </table>
                         <div className="pagination">
                             <button className="pagination_bt1" onClick={() => this.handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
