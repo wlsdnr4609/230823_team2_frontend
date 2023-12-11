@@ -4,7 +4,8 @@ import axios from "axios";
 import $, { data } from 'jquery';
 import Swal from 'sweetalert2';
 import cookie from 'react-cookies';
-import moment from 'moment';
+// import moment from 'moment';
+
 
 class FContentView extends Component {
     constructor(props) {
@@ -31,6 +32,18 @@ class FContentView extends Component {
         this.setState({ niname2: cookie_usernm });  // niname2=로그인한 사람
         this.setState({ reply: '' });  // 댓글 입력 필드 초기화
         this.callSwToolInfoApi();
+
+        new Promise(resolve => {
+            this.callSwToolInfoApi();
+            setTimeout(function () {
+                resolve( 'react');
+            }, 500);
+        }).then(result => {
+            if (this.state.niname !== this.state.niname2) {
+                $('.modifyclass').hide()
+                $('.deleteclass').hide()
+            }
+        })
 
         // callrepliesInfoApi 메서드를 호출하도록 추가합니다.
         this.callrepliesInfoApi();
@@ -126,28 +139,6 @@ class FContentView extends Component {
         })
     }
 
-    // regeistComent = (e) => {
-    //     this.setState({
-    //         reply: e.target.value,
-    //     });
-    // };
-    // inputreply = (e) => {
-    //     const add = this.state.replies;
-    //     add.push(this.state.reply);
-    //     this.setState({
-    //         replies: this.state.replies,
-    //         reply: '',
-    //     });
-    // };
-    // PressClick = (e) => {
-    //     this.inputreply();
-    // };
-    // pressEnter = (e) => {
-    //     if (e.key === 'Enter') {
-    //         this.inputreply();
-    //     }
-    // };
-
     updateRepliesList = () => {
         this.callrepliesInfoApi();
     };
@@ -172,15 +163,15 @@ class FContentView extends Component {
         }
 
         if (this.fnValidate()) {
-            var jsonstr = $("form[name='frm']").serialize();
+            var jsonstr = $("form[name='frm_re']").serialize();
             jsonstr = decodeURIComponent(jsonstr);
             var Json_form = JSON.stringify(jsonstr).replace(/\"/gi, '')
             Json_form = "{\"" + Json_form.replace(/\&/g, '\",\"').replace(/=/gi, '\":"') + "\"}";
-            alert(Json_form);
+            // alert(Json_form);
 
-            // var Json_data = JSON.parse(Json_form);
+            var Json_data = JSON.parse(Json_form);
 
-            axios.post('/api/replies', Json_form)
+            axios.post('/api/replies', Json_data)
                 .then(response => {
                     try {
                         if (response.data === "SUCCESS") {
@@ -240,10 +231,15 @@ class FContentView extends Component {
         })
         this.callSwToolInfoApi();
     }
-
-
-
-
+    sweetalertSucc = (title, showConfirmButton) => {
+        Swal.fire({
+            position: 'bottom-end',
+            icon: 'success',
+            title: title,
+            showConfirmButton: showConfirmButton,
+            timer: 1000
+        })
+    }
 
     render() {
         return (
@@ -317,24 +313,26 @@ class FContentView extends Component {
                                                         {this.updateRepliesList}
 
                                                         {this.state.append_RepliesList}
+
                                                     </tbody>
                                                 </table>
                                             </td>
                                         </tr>
-                                        <tr>
-                                            <th>
-                                                <label for="is_replies">댓글</label>
-                                            </th>
-                                            <td>
-                                                <input
-                                                    type="text"
-                                                    name="replytext"
-                                                    id="is_replies"
-                                                    class=""
-                                                />
-                                                <button className="btn_replies" onClick={(e) => this.submitClick('save', e)}>등록</button>
-                                            </td>
-                                        </tr>
+                                        <div>
+                                            <form name="frm_re" id="frm_re" action="" onSubmit="" method="post">
+                                                <input id="is_replyer" type="hidden" name="replyer" value={this.state.niname2} />
+                                                <input id="is_beforeSwtcode" type="hidden" name="bid" value={this.state.before_swtcode} />
+                                                <tr>
+                                                    <th>
+                                                        <label for="is_replies">댓글</label>
+                                                    </th>
+                                                    <td>
+                                                        <input type="text" name="replytext" id="is_replies" class="" />
+                                                        <button className="btn_replies" onClick={(e) => this.submitClick('save', e)}>등록</button>
+                                                    </td>
+                                                </tr>
+                                            </form>
+                                        </div>
 
                                     </table>
                                     <div class="btn_confirm mt20" style={{ "margin-bottom": "44px" }}>
@@ -349,7 +347,7 @@ class FContentView extends Component {
                         </form>
                     </div>
                 </article>
-            </section>
+            </section >
         );
     }
 }

@@ -31,6 +31,17 @@ class RContentView extends Component {
         this.setState({ niname2: cookie_usernm });  // niname2=로그인한 사람
         this.setState({ reply: '' });  // 댓글 입력 필드 초기화
         this.callSwToolInfoApi();
+        new Promise(resolve => {
+            this.callSwToolInfoApi();
+            setTimeout(function () {
+                resolve( 'react');
+            }, 500);
+        }).then(result => {
+            if (this.state.niname !== this.state.niname2) {
+                $('.modifyclass').hide()
+                $('.deleteclass').hide()
+            }
+        })
 
         // callrepliesInfoApi 메서드를 호출하도록 추가합니다.
         this.callrepliesInfoApi();
