@@ -119,7 +119,7 @@ class FBoardList extends Component {
                         <table className="table_ty2 ad_tlist">
                             <tbody>{this.renderTableRows()}</tbody>
                         </table>
-                        <form className="pagination">
+                        <div className="pagination">
                             <button className="pagination_bt1" onClick={() => this.handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
                                 이전
                             </button>
@@ -134,7 +134,7 @@ class FBoardList extends Component {
                             <button className="pagination_bt1" onClick={() => this.handlePageChange(currentPage + 1)} disabled={currentPage === totalPage}>
                                 다음
                             </button>
-                        </form>
+                        </div>
                     </div>
                 </article>
             </section>

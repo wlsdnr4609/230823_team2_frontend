@@ -23,10 +23,12 @@ class QBoardList extends Component {
     }
 
     callSwToolListApi = async (page = 1) => {
+        // try {
+        //     const response = await axios.post(`/api/qlist?btype=Q&page=${page}&perPageNum=10`, {
+        //         niname: this.state.niname2,
+        //     });
         try {
-            const response = await axios.post(`/api/list?btype=Q&page=${page}&perPageNum=10`, {
-                niname: this.state.niname2,
-            });
+            const response = await axios.get(`/api/list?btype=Q&page=${page}&perPageNum=10`)
             const totalCount = response.headers['x-total-count'];
             this.setState({ totalPage: Math.ceil(totalCount / 10) });
 
@@ -76,7 +78,7 @@ class QBoardList extends Component {
 
         return `${year}/${month}/${day} ${hours}:${minutes}`;
     };
-    
+
     //게시판 서치 api주소 확인해서 변경
 
     // handleFileInput(value, e){
@@ -125,7 +127,7 @@ class QBoardList extends Component {
                         <table className="table_ty2 ad_tlist">
                             <tbody>{this.renderTableRows()}</tbody>
                         </table>
-                        <form className="pagination">
+                        <div className="pagination">
                             <button className="pagination_bt1" onClick={() => this.handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
                                 이전
                             </button>
@@ -140,7 +142,7 @@ class QBoardList extends Component {
                             <button className="pagination_bt1" onClick={() => this.handlePageChange(currentPage + 1)} disabled={currentPage === totalPage}>
                                 다음
                             </button>
-                        </form>
+                        </div>
                     </div>
                 </article>
             </section>

@@ -23,10 +23,6 @@ class NContentView extends Component {
             bid: '',
             responseRepliesList: '',
             append_RepliesList: '',
-            replyer: '',
-            replytext: '',
-            btype: '',
-
         }
         //alert(this.state.before_swtcode )
     }
@@ -47,6 +43,9 @@ class NContentView extends Component {
             }
         })
     }
+    updateRepliesList = () => {
+        this.callrepliesInfoApi();
+    };
 
     callSwToolInfoApi = async () => {
         axios.post('/api/read', {
@@ -110,6 +109,15 @@ class NContentView extends Component {
         })
     }
 
+    updateRepliesList = () => {
+        this.callrepliesInfoApi();
+    };
+    componentDidUpdate(prevProps, prevState) {
+
+        if (prevState.replies !== this.state.replies) {
+            console.log('댓글 목록이 갱신되었습니다.');
+        }
+    }
     submitClick = async (type, e) => {
         this.replies_val_checker = $('#is_replies').val();
 
@@ -120,115 +128,65 @@ class NContentView extends Component {
                 return false;
             }
             $('#is_replies').removeClass('border_validate_err');
+
             return true;
         }
+
         if (this.fnValidate()) {
-            var jsonstr = $("form[name='replytext']").serialize();
+            var jsonstr = $("form[name='frm']").serialize();
             jsonstr = decodeURIComponent(jsonstr);
             var Json_form = JSON.stringify(jsonstr).replace(/\"/gi, '')
             Json_form = "{\"" + Json_form.replace(/\&/g, '\",\"').replace(/=/gi, '\":"') + "\"}";
             alert(Json_form);
 
-            axios.post('/api/replies', Json_form, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
+            var Json_data = JSON.parse(Json_form);
+
+            axios.post('/api/replies', Json_data)
                 .then(response => {
                     try {
-                        if (response.data == "success") {
-                            if (type == 'save') {
-                                this.sweetalertSucc('등록되었습니다.', false)
+                        if (response.data === "succ") {
+                            if (type === 'save') {
+                                this.sweetalertSucc('등록되었습니다.', false);
                             }
-                            setTimeout(function() {
-                                this.props.history.push('/NContentView');
-                                }.bind(this),1500
-                            );
-                            // setTimeout(function () {
-                            //     if (this.btype == 'F') {
-                            //         this.props.history.push('/FBoardList');
-                            //         return false;
-                            //     }
-                            //     if (this.btype == 'N') {
-                            //         this.props.history.push('/NBoardList');
-                            //         return false;
-                            //     }
-                            //     if (this.btype ==='R') {
-                            //         this.props.history.push('/RBoardList');
-                            //         return false;
-                            //     }
-                            //     if (this.btype == 'Q') {
-                            //         this.props.history.push('/QBoardList');
-                            //         return false;
-                            //     }
-                            //     return true;
-                            // }.bind(this), 1500
-                            // );
+                            // 댓글 등록 후 댓글 목록을 다시 불러오기
+                            this.callrepliesInfoApi();
                         }
-                    }
-                    catch (error) {
-                        alert('1. 작업중 오류가 발생하였습니다.')
+                    } catch (error) {
+                        alert('1. 작업중 오류가 발생하였습니다.');
                     }
                 })
-                .catch(error => { alert('2. 작업중 오류가 발생하였습니다.'); return false; });
-            this.callRepliesInfoApi();
+                .catch(error => { alert('2. 작업중 오류가 발생하였습니다.'); });
         }
     }
 
-    callRepliesInfoApi = async () => {
-        try {
-            const response = await axios.get('/api/replies/all/{ this.state.before_swtcode}', {
-            });
-
-            this.setState({ responseRepliesList: response.data });
-            this.setState({ append_RepliesList: this.repliesListAppend() });
-
-            alert("bid: " + this.state.before_swtcode);
-            alert("responseRepliesList: " + JSON.stringify(this.state.responseRepliesList));
-        } catch (error) {
-            alert('작업 중 오류가 발생하였습니다.');
-        }
-    };
-
-
-    // callrepliesInfoApi = async () => {
-    //     try {
-    //       // Use await here to wait for the completion of the asynchronous operation
-    //       const response = await axios.post('/api/replies/all', {
-    //         bid: this.state.before_swtcode,
-    //       });
-
-    //       // Set state using response data (use response.data)
-    //       this.setState({ responseRepliesList: response.data });
-
-    //       // Call RepliesListAppend and set state (assuming RepliesListAppend returns some value)
-    //       this.setState({ append_RepliesList: this.RepliesListAppend() });
-
-    //       // These alerts will run after the asynchronous operations are complete
-    //       alert("bid: " + this.state.before_swtcode);
-    //       alert("responseRepliesList: " + JSON.stringify(this.state.responseRepliesList));
-    //     } catch (error) {
-    //       // Handle errors
-    //       alert('작업 중 오류가 발생하였습니다.');
-    //     }
-    //   };
-
-    repliesListAppend = () => {
-        let result = []
-        var RepliesList = this.state.responseRepliesList.data
+    RepliesListAppend = () => {
+        let result = [];
+        var RepliesList = this.state.responseRepliesList.data;
 
         for (let i = 0; i < RepliesList.length; i++) {
-            var data = RepliesList[i]
-
+            var data = RepliesList[i];
             result.push(
-                <tr>
-                    <td>{data.replyer}: {data.replytext}</td>
+                <tr key={i}>
+                    <td>{data.replyer}           :        {data.replytext}</td>
                 </tr>
-            )
-        } alert(RepliesList.data);
-        return result
+            );
+        }
+        console.log(RepliesList);
+        return result;
     }
 
+    callrepliesInfoApi = async () => {
+        axios.get(`/api/replies/all/${this.state.before_swtcode}`)
+            .then(response => {
+                try {
+                    this.setState({ responseRepliesList: response });
+                    this.setState({ append_RepliesList: this.RepliesListAppend() });
+                } catch (error) {
+                    alert('작업중 오류가 발생하였습니다.');
+                }
+            })
+            .catch(error => { alert('작업중 오류가 발생하였습니다.'); return false; });
+    }
     sweetalertSucc = (title, showConfirmButton) => {
         Swal.fire({
             position: 'bottom-end',
@@ -309,27 +267,31 @@ class NContentView extends Component {
                                         <tr>
                                             <th>
                                             </th>
-                                            <td>
-                                                <div>{this.state.append_RepliesList}</div>
-                                            </td>
+                                            <table>
+                                                <tbody>
+
+                                                    {this.updateRepliesList}
+
+                                                    {this.state.append_RepliesList}
+                                                </tbody>
+                                            </table>
                                         </tr>
                                         <tr>
                                             <th>
                                                 <label for="is_replies">댓글</label>
                                             </th>
                                             <td>
-                                                <form name="replytext" >
-                                                    <input id="is_beforeSwtcode" type="hidden" name="bid" value={this.state.before_swtcode} />
-                                                    <input id="is_replyer" type="hidden" name="replyer" value={this.state.niname2} />
-                                                    <input type="text" name="replytext" id="is_replies" class=""
-                                                        onChange={this.regeistComent}
-                                                        onKeyPress={this.pressEnter}
-                                                    // value={this.state.reply}
-                                                    />
-                                                    <button className="btn_replies" onClick={(e) => this.submitClick('save', e)}>등록</button>
-                                                </form>
+                                                <input
+                                                    type="text"
+                                                    name="replytext"
+                                                    id="is_replies"
+                                                    class=""
+                                                />
+
+                                                <button className="btn_replies" onClick={(e) => this.submitClick('save', e)}>등록</button>
                                             </td>
                                         </tr>
+                                       
                                     </table>
                                     <div class="btn_confirm mt20" style={{ "margin-bottom": "44px" }}>
                                         <Link to={'/NBoardList'} className="bt_ty bt_ty1 cancel_ty1">목록보기</Link>
