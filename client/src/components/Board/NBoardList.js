@@ -41,14 +41,19 @@ class NBoardList extends Component {
     renderTableRows = () => {
         const { responseSwtoolList, itemsPerPage } = this.state;
 
+        // 최신 데이터 순서로 정렬
+        const sortedList = responseSwtoolList.slice().sort((a, b) => new Date(b.regdate) - new Date(a.regdate));
+
         // 현재 페이지에 해당하는 데이터만 추출
         const startIndex = (this.state.currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
-        const currentPageData = responseSwtoolList.slice(startIndex, endIndex);
+        const currentPageData = sortedList.slice(startIndex, endIndex).reverse(); // 역순으로 정렬
 
-        return currentPageData.map((data) => (
+        const totalItemCount = sortedList.length;
+
+        return currentPageData.map((data, index) => (
             <tr key={data.bid}>
-                <td>{data.bid}</td>
+                <td>{totalItemCount - (startIndex + index)}</td>
                 <td>
                     <Link to={`ContentView/${data.bid}`}>{data.title}</Link>
                 </td>
