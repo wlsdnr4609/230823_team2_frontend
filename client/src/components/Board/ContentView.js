@@ -121,28 +121,6 @@ class ContentView extends Component {
         })
     }
 
-    // regeistComent = (e) => {
-    //     this.setState({
-    //         reply: e.target.value,
-    //     });
-    // };
-    // inputreply = (e) => {
-    //     const add = this.state.replies;
-    //     add.push(this.state.reply);
-    //     this.setState({
-    //         replies: this.state.replies,
-    //         reply: '',
-    //     });
-    // };
-    // PressClick = (e) => {
-    //     this.inputreply();
-    // };
-    // pressEnter = (e) => {
-    //     if (e.key === 'Enter') {
-    //         this.inputreply();
-    //     }
-    // };
-
     updateRepliesList = () => {
         this.callrepliesInfoApi();
     };
@@ -304,12 +282,18 @@ class ContentView extends Component {
                                             </td>
                                         </tr>
                                         <tr>
+                                            <th>
+                                            </th>
+                                            <td>
+                                                <table>
+                                                    <tbody>
 
+                                                        {this.updateRepliesList}
 
-
-
-
-
+                                                        {this.state.append_RepliesList}
+                                                    </tbody>
+                                                </table>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <th>
@@ -322,21 +306,8 @@ class ContentView extends Component {
                                                     id="is_replies"
                                                     class=""
                                                 />
-
                                                 <button className="btn_replies" onClick={(e) => this.submitClick('save', e)}>등록</button>
                                             </td>
-                                        </tr>
-                                        <tr>
-
-                                            <table>
-                                                <tbody>
-
-                                                    {this.updateRepliesList}
-
-                                                    {this.state.append_RepliesList}
-                                                </tbody>
-                                            </table>
-
                                         </tr>
 
                                     </table>

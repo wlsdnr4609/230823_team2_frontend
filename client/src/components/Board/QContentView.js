@@ -54,8 +54,8 @@ class QContentView extends Component {
                     this.setState({ likes: data.likes })
                     this.setState({ regdate: data.regdate })
 
-                    const formattedDate = moment(data.regdate).format('YY/MM/DD HH:mm');
-                    this.setState({ regdate: formattedDate  });
+                    // const formattedDate = moment(data.regdate).format('YYYY.MM.DD HH:mm');
+                    // this.setState({ regdate: formattedDate  });
                     
                     $('#is_niname').val(data.niname)
                     $('#is_cont').val(data.cont)
@@ -309,6 +309,20 @@ class QContentView extends Component {
                                         </tr>
                                         <tr>
                                             <th>
+                                            </th>
+                                            <td>
+                                                <table>
+                                                    <tbody>
+
+                                                        {this.updateRepliesList}
+
+                                                        {this.state.append_RepliesList}
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>
                                                 <label for="is_replies">댓글</label>
                                             </th>
                                             <td>
@@ -320,20 +334,6 @@ class QContentView extends Component {
                                                 />
 
                                                 <button className="btn_replies" onClick={(e) => this.submitClick('save', e)}>등록</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>
-                                            </th>
-                                            <td>
-                                                <table>
-                                                    <tbody>
-
-                                                        {this.updateRepliesList}
-
-                                                        {this.state.append_RepliesList}
-                                                    </tbody>
-                                                </table>
                                             </td>
                                         </tr>
 

@@ -14,7 +14,8 @@ class QBoardList extends Component {
             currentPage: 1,
             totalPage: 1,
             itemsPerPage: 10,
-            niname: '', //로그인한 닉네임
+            niname: '', // 로그인한 닉네임
+            myPostsCount: 0, // 내 글의 총 개수 추가
         };
     }
     componentDidMount() {
@@ -28,16 +29,16 @@ class QBoardList extends Component {
         //     const response = await axios.post(`/api/qlist?btype=Q&page=${page}&perPageNum=10`, {
         //         niname: this.state.niname,
         //     });
+
         try {
-            const response = await axios.get(`/api/list?btype=Q&page=${page}&perPageNum=10`)
-            const totalCount = response.headers['x-total-count'];
-            this.setState({ totalPage: Math.ceil(totalCount / 10) });
+            const response = await axios.get(`/api/list?btype=Q&page=${page}&perPageNum=10`);
+            const myPosts = response.data.filter(data => data.niname === this.state.niname);
+            const totalCount = myPosts.length;
 
             this.setState({
-                responseSwtoolList: response.data,
+                responseSwtoolList: myPosts,
                 currentPage: page,
                 totalCount: totalCount,
-
             });
         } catch (error) {
             alert('작업중 오류가 발생하였습니다.');
@@ -58,9 +59,10 @@ class QBoardList extends Component {
 
             // 글쓴이의 닉네임과 현재 로그인한 사용자의 닉네임을 비교하여 조건에 따라 보이도록 함
             if (isCurrentUser ? data.niname === niname : true) {
+                const itemNumber = responseSwtoolList.length - (startIndex + i);
                 result.push(
                     <tr key={data.bid}>
-                        <td>{data.bid}</td>
+                        <td>{itemNumber}</td>
                         <td>
                             <Link to={`QContentView/${data.bid}`}>{data.title}</Link>
                         </td>
@@ -88,7 +90,7 @@ class QBoardList extends Component {
         const hours = ('0' + date.getHours()).slice(-2);
         const minutes = ('0' + date.getMinutes()).slice(-2);
 
-        return `${year}/${month}/${day} ${hours}:${minutes}`;
+        return `${year}.${month}.${day} ${hours}:${minutes}`;
     };
 
     //게시판 서치 api주소 확인해서 변경

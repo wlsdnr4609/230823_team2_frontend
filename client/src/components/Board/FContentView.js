@@ -54,9 +54,9 @@ class FContentView extends Component {
                     this.setState({ likes: data.likes })
                     this.setState({ regdate: data.regdate })
 
-                    const formattedDate = moment(data.regdate).format('YY/MM/DD HH:mm');
-                    this.setState({ regdate: formattedDate  });
-                    
+                    // const formattedDate = moment(data.regdate).format('YYYY.MM.DD HH:mm');
+                    // this.setState({ regdate: formattedDate  });
+
                     $('#is_niname').val(data.niname)
                     $('#is_cont').val(data.cont)
                     $('#is_title').val(data.title)
@@ -176,14 +176,14 @@ class FContentView extends Component {
             jsonstr = decodeURIComponent(jsonstr);
             var Json_form = JSON.stringify(jsonstr).replace(/\"/gi, '')
             Json_form = "{\"" + Json_form.replace(/\&/g, '\",\"').replace(/=/gi, '\":"') + "\"}";
-            // alert(Json_form);
+            alert(Json_form);
 
-            var Json_data = JSON.parse(Json_form);
+            // var Json_data = JSON.parse(Json_form);
 
-            axios.post('/api/replies', Json_data)
+            axios.post('/api/replies', Json_form)
                 .then(response => {
                     try {
-                        if (response.data === "succ") {
+                        if (response.data === "SUCCESS") {
                             if (type === 'save') {
                                 this.sweetalertSucc('등록되었습니다.', false);
                             }
@@ -309,21 +309,6 @@ class FContentView extends Component {
                                         </tr>
                                         <tr>
                                             <th>
-                                                <label for="is_replies">댓글</label>
-                                            </th>
-                                            <td>
-                                                <input
-                                                    type="text"
-                                                    name="replytext"
-                                                    id="is_replies"
-                                                    class=""
-                                                />
-
-                                                <button className="btn_replies" onClick={(e) => this.submitClick('save', e)}>등록</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>
                                             </th>
                                             <td>
                                                 <table>
@@ -334,6 +319,20 @@ class FContentView extends Component {
                                                         {this.state.append_RepliesList}
                                                     </tbody>
                                                 </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <label for="is_replies">댓글</label>
+                                            </th>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    name="replytext"
+                                                    id="is_replies"
+                                                    class=""
+                                                />
+                                                <button className="btn_replies" onClick={(e) => this.submitClick('save', e)}>등록</button>
                                             </td>
                                         </tr>
 

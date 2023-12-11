@@ -71,7 +71,7 @@ class FBoardList extends Component {
         const hours = ('0' + date.getHours()).slice(-2);
         const minutes = ('0' + date.getMinutes()).slice(-2);
 
-        return `${year}/${month}/${day} ${hours}:${minutes}`;
+        return `${year}.${month}.${day} ${hours}:${minutes}`;
     };
 
     render() {
@@ -82,7 +82,7 @@ class FBoardList extends Component {
             <section className="sub_wrap">
                 <article className="s_cnt mp_pro_li ct1 mp_pro_li_admin">
                     <div className="li_top">
-                        <h2 className="s_tit1">공지사항</h2>
+                        <h2 className="s_tit1">자유게시판</h2>
                         <div className="li_top_sch af">
                         <td class="fileBox fileBox_w1">
                                 <select id="fileSh" name="email2" className="btn_file">

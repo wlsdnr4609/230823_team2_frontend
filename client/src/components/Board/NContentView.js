@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from "axios";
 import $, { data } from 'jquery';
-import moment from 'moment';
-
 import Swal from 'sweetalert2';
 import cookie from 'react-cookies';
+// import moment from 'moment';
+
 
 class NContentView extends Component {
     constructor(props) {
@@ -41,26 +41,47 @@ class NContentView extends Component {
         this.callrepliesInfoApi();
     };
     callSwToolInfoApi = async () => {
+        //alert("this.state.before_swtcode="+this.state.before_swtcode);
         axios.post('/api/read', {
             bid: this.state.before_swtcode,
         })
             .then(response => {
                 try {
-                    var data = response.data;
-                    this.setState({ title: data.title });
-                    this.setState({ cont: data.cont });
-                    this.setState({ niname: data.niname });
-                    this.setState({ likes: data.likes });
+                    var data = response.data
 
-                    const formattedDate = moment(data.regdate).format('YY/MM/DD HH:mm');
-                    this.setState({ regdate: formattedDate  });
-                    
-                    
-                    $('#is_niname').val(data.niname);
-                    $('#is_cont').val(data.cont);
-                    $('#is_title').val(data.title);
-                    $('#is_like').val(data.likes);
-                } catch (error) {
+                    this.setState({ title: data.title })
+                    this.setState({ cont: data.cont })
+                    this.setState({ niname: data.niname })
+                    this.setState({ likes: data.likes })
+                    this.setState({ regdate: data.regdate })
+
+                    // const formattedDate = moment(data.regdate).format('YYYY.MM.DD HH:mm');
+                    // this.setState({ regdate: formattedDate  });
+
+                    $('#is_niname').val(data.niname)
+                    $('#is_cont').val(data.cont)
+                    $('#is_title').val(data.title)
+                    $('#is_like').val(data.likes)
+
+
+                    // var manualName = data.swt_manual_path.replace('/swmanual/','')
+                    // var fileName = data.swt_big_imgpath.replace('/image/','')
+                    // var fileName2 = data.swt_imagepath.replace('/image/','')
+                    // $('#upload_img').prepend('<img id="uploadimg" src="'+data.swt_big_imgpath+'"/>')
+                    // // $('#upload_img2').prepend('<img id="uploadimg2" src="'+data.swt_imagepath+'"/>')
+
+                    // $('#imagefile').val(fileName)
+                    // // $('#imagefile2').val(fileName2)
+                    // $('#manualfile').val(manualName)
+
+                    // if($('#uploadimg').attr('src').indexOf("null") > -1){
+                    //     $('#uploadimg').hide()
+                    // }
+                    // if($('#uploadimg2').attr('src').indexOf("null") > -1){
+                    //     $('#uploadimg2').hide()
+                    // }                              
+                }
+                catch (error) {
                     alert('3. 작업중 오류가 발생하였습니다.')
                 }
             })
@@ -105,29 +126,6 @@ class NContentView extends Component {
             callbackFunc()
         })
     }
-    // this.setState({ regdate: data.regdate });
-
-    // regeistComent = (e) => {
-    //     this.setState({
-    //         reply: e.target.value,
-    //     });
-    // };
-    // inputreply = (e) => {
-    //     const add = this.state.replies;
-    //     add.push(this.state.reply);
-    //     this.setState({
-    //         replies: this.state.replies,
-    //         reply: '',
-    //     });
-    // };
-    // PressClick = (e) => {
-    //     this.inputreply();
-    // };
-    // pressEnter = (e) => {
-    //     if (e.key === 'Enter') {
-    //         this.inputreply();
-    //     }
-    // };
 
     updateRepliesList = () => {
         this.callrepliesInfoApi();
@@ -153,7 +151,7 @@ class NContentView extends Component {
         }
 
         if (this.fnValidate()) {
-            var jsonstr = $("form[name='frm']").serialize();
+            var jsonstr = $("form[name='frm_re']").serialize();
             jsonstr = decodeURIComponent(jsonstr);
             var Json_form = JSON.stringify(jsonstr).replace(/\"/gi, '')
             Json_form = "{\"" + Json_form.replace(/\&/g, '\",\"').replace(/=/gi, '\":"') + "\"}";
@@ -164,7 +162,7 @@ class NContentView extends Component {
             axios.post('/api/replies', Json_data)
                 .then(response => {
                     try {
-                        if (response.data === "succ") {
+                        if (response.data === "SUCCESS") {
                             if (type === 'save') {
                                 this.sweetalertSucc('등록되었습니다.', false);
                             }
@@ -213,27 +211,23 @@ class NContentView extends Component {
             .catch(error => { alert('작업중 오류가 발생하였습니다.'); return false; });
     }
 
-        likeSwtool = async (type, e) => {
-            var likeCnt = this.state.likes + 1;
-            axios.post('/api/likes', {
-                bid: this.state.before_swtcode,
-                likes: likeCnt
-            })
-            this.callSwToolInfoApi();
-        }
-
-        formatDate = (timestamp) => {
-            const date = new Date(timestamp);
-            const year = date.getFullYear().toString().slice(2);
-            const month = ('0' + (date.getMonth() + 1)).slice(-2);
-            const day = ('0' + date.getDate()).slice(-2);
-            const hours = ('0' + date.getHours()).slice(-2);
-            const minutes = ('0' + date.getMinutes()).slice(-2);
-    
-            return `${year}/${month}/${day} ${hours}:${minutes}`;
-        };
-
-
+    likeSwtool = async (type, e) => {
+        var likeCnt = this.state.likes + 1;
+        axios.post('/api/likes', {
+            bid: this.state.before_swtcode,
+            likes: likeCnt
+        })
+        this.callSwToolInfoApi();
+    }
+    sweetalertSucc = (title, showConfirmButton) => {
+        Swal.fire({
+            position: 'bottom-end',
+            icon: 'success',
+            title: title,
+            showConfirmButton: showConfirmButton,
+            timer: 1000
+        })
+    }
 
     render() {
         return (
@@ -299,21 +293,6 @@ class NContentView extends Component {
                                         </tr>
                                         <tr>
                                             <th>
-                                                <label for="is_replies">댓글</label>
-                                            </th>
-                                            <td>
-                                                <input
-                                                    type="text"
-                                                    name="replytext"
-                                                    id="is_replies"
-                                                    class=""
-                                                />
-
-                                                <button className="btn_replies" onClick={(e) => this.submitClick('save', e)}>등록</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>
                                             </th>
                                             <td>
                                                 <table>
@@ -322,10 +301,26 @@ class NContentView extends Component {
                                                         {this.updateRepliesList}
 
                                                         {this.state.append_RepliesList}
+
                                                     </tbody>
                                                 </table>
                                             </td>
                                         </tr>
+                                        <div>
+                                            <form name="frm_re" id="frm_re" action="" onSubmit="" method="post">
+                                                <input id="is_replyer" type="hidden" name="replyer" value={this.state.niname2} />
+                                                <input id="is_beforeSwtcode" type="hidden" name="bid" value={this.state.before_swtcode} />
+                                                <tr>
+                                                    <th>
+                                                        <label for="is_replies">댓글</label>
+                                                    </th>
+                                                    <td>
+                                                        <input type="text" name="replytext" id="is_replies" class="" />
+                                                        <button className="btn_replies" onClick={(e) => this.submitClick('save', e)}>등록</button>
+                                                    </td>
+                                                </tr>
+                                            </form>
+                                        </div>
 
                                     </table>
                                     <div class="btn_confirm mt20" style={{ "margin-bottom": "44px" }}>
@@ -340,7 +335,7 @@ class NContentView extends Component {
                         </form>
                     </div>
                 </article>
-            </section>
+            </section >
         );
     }
 }

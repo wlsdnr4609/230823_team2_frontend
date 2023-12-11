@@ -54,8 +54,8 @@ class RContentView extends Component {
                     this.setState({ likes: data.likes })
                     this.setState({ regdate: data.regdate })
 
-                    const formattedDate = moment(data.regdate).format('YY/MM/DD HH:mm');
-                    this.setState({ regdate: formattedDate  });
+                    // const formattedDate = moment(data.regdate).format('YYYY.MM.DD HH:mm');
+                    // this.setState({ regdate: formattedDate  });
                     
                     $('#is_niname').val(data.niname)
                     $('#is_cont').val(data.cont)
@@ -308,21 +308,6 @@ class RContentView extends Component {
                                         </tr>
                                         <tr>
                                             <th>
-                                                <label for="is_replies">댓글</label>
-                                            </th>
-                                            <td>
-                                                <input
-                                                    type="text"
-                                                    name="replytext"
-                                                    id="is_replies"
-                                                    class=""
-                                                />
-
-                                                <button className="btn_replies" onClick={(e) => this.submitClick('save', e)}>등록</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>
                                             </th>
                                             <td>
                                                 <table>
@@ -333,6 +318,20 @@ class RContentView extends Component {
                                                         {this.state.append_RepliesList}
                                                     </tbody>
                                                 </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <label for="is_replies">댓글</label>
+                                            </th>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    name="replytext"
+                                                    id="is_replies"
+                                                    class=""
+                                                />
+                                                <button className="btn_replies" onClick={(e) => this.submitClick('save', e)}>등록</button>
                                             </td>
                                         </tr>
 
